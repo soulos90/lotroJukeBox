@@ -1,0 +1,48 @@
+return 
+{
+	["InstrSlots"] = 
+	{
+		["number"] = "8",
+		["3"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["2"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["5"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["4"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["7"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["6"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["8"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		},
+		["visible"] = "no",
+		["1"] = 
+		{
+			["qsType"] = "nil",
+			["qsData"] = ""
+		}
+	}
+}

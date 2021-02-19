@@ -1,0 +1,12 @@
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.exe.config
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.exe
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.pdb
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSyncer.pdb
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csprojAssemblyReference.cache
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.Form1.resources
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.Properties.Resources.resources
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.GenerateResource.cache
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.CoreCompileInputs.cache
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.CopyComplete
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.exe
+C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.pdb

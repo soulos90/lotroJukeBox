@@ -1,0 +1,15 @@
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\windowsManipulator.exe.config
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\windowsManipulator.exe
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\windowsManipulator.pdb
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.Properties.Resources.resources
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.csproj.GenerateResource.cache
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.csproj.CoreCompileInputs.cache
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.exe
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.pdb
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.csproj.CopyComplete
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.Form1.resources
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\obj\Debug\windowsManipulator.csprojAssemblyReference.cache
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\Interceptor.dll
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\JukeBoxSyncer.dll
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\Interceptor.pdb
+C:\Users\soulo\source\repos\windowsManipulator\windowsManipulator\bin\Debug\JukeBoxSyncer.pdb

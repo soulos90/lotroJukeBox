@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Plugin>
+	<Information>
+		<Name>JukeBox</Name>
+		<Author>Nathan</Author>
+		<Version>1.0</Version>
+		<Image>Nathan/jukebox.jpg</Image>
+	</Information>
+	<Package>Nathan.JukeBox.Main</Package>
+</Plugin>
