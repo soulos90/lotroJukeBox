@@ -13,11 +13,11 @@ namespace JukeBoxSyncer
         public int id;
         public bool found = false;
         public PluginData PData;
+        public PluginInputs PInputs;
         public string account;
         public DateTime SyncTime;
         public Data(int i, DateTime at)
         {
-            
             id = i;
             SyncTime = at;
             CheckFiles();
@@ -38,36 +38,184 @@ namespace JukeBoxSyncer
             for(int i = 0; i < accountnames.Length; ++i)
             {
                 string all = accountnames[i] + "\\AllServers";
-                string JBData = all + "\\JukeBoxData.plugindata";
+                string JBInputs = all + "\\JukeBoxInputs.plugindata";
                 if (!Directory.Exists(all))
                 {
                     Directory.CreateDirectory(all);
                 }
-                if (!File.Exists(JBData))
+                if (!File.Exists(JBInputs))
                 {
-                    File.Create(JBData);
+                    File.Create(JBInputs);
                 }
-                PluginData temp;
-                using (StreamReader r = new StreamReader(JBData))
+                PluginInputs temp;
+                using (StreamReader r = new StreamReader(JBInputs))
                 {
                     string file = r.ReadToEnd();
-                    temp = new PluginData(file);
+                    temp = new PluginInputs(file);
                 }
+                if(temp.Inputs.IsActive && temp.Inputs.Timecode != SyncTime.ToBinary())
+                {
+                    PInputs = temp;
+                    string JBData = all + "\\JukeBoxData.plugindata";
+                    if (!File.Exists(JBData))
+                    {
+                        File.Create(JBData);
+                    }
+                    using (StreamReader r = new StreamReader(JBData))
+                    {
+                        string file = r.ReadToEnd();
+                        PData = new PluginData(file);
+                    }
+                    break;
+                }
+            }
+        }
+        public class PluginInputs
+        {
+            public Input Inputs;
+            public PluginInputs(string file)
+            {
+                int i = 0;
+                while (i < file.Length)
+                {
+                    if (file[i] == '{')
+                    {
+                        ++i;
+                        GetObject(file, ref i);
+                    }
+                    else
+                    {
+                        ++i;
+                    }
+                }
+            }
+            private void GetObject(string file, ref int i)
+            {
+                string label = null;
+                while (file[i] != '}')
+                {
+                    if (file[i] == '[')
+                    {
+                        ++i;
+                        while (file[i++] != '\"') ;
+                        label = GetWord(file, ref i);
+                    }
+                    else if (file[i] == '{')
+                    {
+                        ++i;
+                        if (label == "Inputs")
+                        {
+                            GetInputs(file, ref i);
+                        }
+                    }
+                }
+                ++i;
+            }
+            private void GetInputs(string file, ref int i)
+            {
+                Inputs = new Input();
+                string label = "";
+                List<Command> commands = new List<Command>();
+                while (file[i] != '}')
+                {
+                    if (file[i++] == '\"')
+                    {
+                        label = GetWord(file, ref i);
+                        if (label == "Commands")
+                        {
+                            while (file[i++] != '{') ;
+                            while (file[i] != '}')
+                            {
+                                commands.Add(GetCommand(file, ref i));
+                            }
+                            ++i;
+                        }
+                        else
+                        {
+                            while (file[i++] != '\"') ;
+                            if (label == "Id")
+                            {
+                                Inputs.Id = ushort.Parse(GetWord(file, ref i));
+                            }
+                            else if (label == "Timecode")
+                            {
+                                Inputs.Timecode = long.Parse(GetWord(file, ref i));
+                            }
+                            else if( label == "IsActive")
+                            {
+                                Inputs.IsActive = short.Parse(GetWord(file, ref i)) == 1;
+                            }
+                        }
+                    }
+                }
+            }
+            private Command GetCommand(string file, ref int i)
+            {
+                Command val = new Command();
+                string label = "";
+                while (file[i] != '}')
+                {
+                    if (file[i++] == '\"')
+                    {
+                        label = GetWord(file, ref i);
+                        while (file[i++] != '\"') ;
+                        if (label == "SentBy")
+                        {
+                            val.SentBy = GetWord(file, ref i);
+                        }
+                        else if (label == "CommandType")
+                        {
+                            val.CommandType = GetWord(file, ref i);
+                        }
+                        else if (label == "Details")
+                        {
+                            val.Details = GetWord(file, ref i);
+                        }
+                    }
+                }
+                return val;
+            }
+            private string GetWord(string file, ref int i)
+            {
+                string val = "";
+                while (file[i] != '\"')
+                {
+                    val += file[i++];
+                }
+                ++i;
+                return val;
+            }
+            public struct Input
+            {
+                public ushort Id;
+                public long Timecode;
+                public bool IsActive;
+                public Command[] Commands;
+            }
+            public struct Command
+            {
+                public string SentBy;
+                public string CommandType;
+                public string Details;
             }
         }
         public class PluginData
         {
             public string[] Directories;
             public Song[] Songs;
-            public Input Inputs;
             public PluginData(string file)
             {
                 int i = 0;
                 while (i < file.Length)
                 {
-                    if(file[i++] == '{')//interesting callstack question
+                    if(file[i] == '{')//interesting callstack question
                     {
+                        ++i;
                         GetObject(file, ref i);
+                    }
+                    else
+                    {
+                        ++i;
                     }
                 }
             }
@@ -92,70 +240,9 @@ namespace JukeBoxSyncer
                         {
                             GetSongs(file, ref i);
                         }
-                        else if(label == "Inputs")
-                        {
-                            GetInputs(file, ref i);
-                        }
                     }
                 }
                 ++i;
-            }
-            private void GetInputs(string file, ref int i)
-            {
-                Inputs = new Input();
-                string label = "";
-                List<Command> commands = new List<Command>();
-                while(file[i] != '}')
-                {
-                    if(file[i++] == '\"')
-                    {
-                        label = GetWord(file, ref i);
-                        if(label == "Commands")
-                        {
-                            while (file[i++] != '{') ;
-                            while(file[i] != '}')
-                            {
-                                commands.Add(GetCommand(file, ref i));
-                            }
-                            ++i;
-                        }
-                        else
-                        {
-                            while (file[i++] != '\"') ;
-                            if(label == "Id")
-                            {
-                                Inputs.Id = ushort.Parse(GetWord(file, ref i));
-                            }
-                            else if(label == "Timecode"){
-                                Inputs.Timecode = long.Parse(GetWord(file, ref i));
-                            }
-                        }
-                    }
-                }
-            }
-            private Command GetCommand(string file, ref int i)
-            {
-                Command val = new Command();
-                string label = "";
-                while(file[i] != '}')
-                {
-                    if(file[i++] == '\"')
-                    {
-                        label = GetWord(file, ref i);
-                        while (file[i++] != '\"') ;
-                        if(label == "SentBy")
-                        {
-                            val.SentBy = GetWord(file, ref i);
-                        }else if(label == "CommandType")
-                        {
-                            val.CommandType = GetWord(file, ref i);
-                        }else if(label == "Details")
-                        {
-                            val.Details = GetWord(file, ref i);
-                        }
-                    }
-                }
-                return val;
             }
             private void GetSongs(string file, ref int i)
             {
@@ -266,18 +353,6 @@ namespace JukeBoxSyncer
             {
                 public string Id;
                 public string Name;
-            }
-            public struct Input
-            {
-                public ushort Id;
-                public long Timecode;
-                public Command[] Commands;
-            }
-            public struct Command
-            {
-                public string SentBy;
-                public string CommandType;
-                public string Details;
             }
         }
     }
