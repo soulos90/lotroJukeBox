@@ -57,6 +57,7 @@ namespace JukeBoxSyncer
                 {
                     PInputs = temp;
                     string JBData = all + "\\JukeBoxData.plugindata";
+                    account = accountnames[i];
                     if (!File.Exists(JBData))
                     {
                         File.Create(JBData);
@@ -69,6 +70,14 @@ namespace JukeBoxSyncer
                     break;
                 }
             }
+        }
+        public void Write(bool newSongs)
+        {
+            if (newSongs)
+            {
+                PData.Write(account);
+            }
+            PInputs.Write();
         }
         public class PluginInputs
         {
@@ -88,6 +97,10 @@ namespace JukeBoxSyncer
                         ++i;
                     }
                 }
+            }
+            public void Write()
+            {
+
             }
             private void GetObject(string file, ref int i)
             {
@@ -218,6 +231,68 @@ namespace JukeBoxSyncer
                         ++i;
                     }
                 }
+            }
+            public void Write(string account)
+            {
+                string lotro = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\The Lord of the Rings Online";
+                if (!Directory.Exists(lotro))
+                {
+                    Directory.CreateDirectory(lotro);
+                }
+                string pluginData = lotro + "\\PluginData";
+                if (!Directory.Exists(pluginData))
+                {
+                    Directory.CreateDirectory(pluginData);
+                }
+                string all = account + "\\AllServers";
+                if (!Directory.Exists(all))
+                {
+                    Directory.CreateDirectory(all);
+                }
+                string JBData = all + "\\JukeBoxData.plugindata";
+                if (!File.Exists(JBData))
+                {
+                    File.Create(JBData);
+                }
+                using (StreamWriter w = new StreamWriter(JBData))
+                {
+                    w.Write("return\n{\n");
+                    WriteDirectories(w);
+                    WriteSongs(w);
+                    w.Write("}");
+                }
+            }
+            private void WriteDirectories(StreamWriter w)
+            {
+                w.Write("\t[\"Directories\"] =\n\t{\n");
+                for(int i = 0; i < Directories.Length; ++i)
+                {
+                    w.Write("\t\t[" + (i + 1) + "] = \"" + Directories[i] + "\"");
+                    if(i+1 < Directories.Length)
+                    {
+                        w.Write(",");
+                    }
+                    w.Write("\n");
+                }
+                w.Write("\t},\n");
+            }
+            private void WriteSongs(StreamWriter w)
+            {
+                w.Write("\t[\"Songs\"] =\n\t{");
+                for(int i = 0; i < Songs.Length; ++i)
+                {
+                    w.Write("\t\t[" + (i + 1) + "] =\n\t\t{\n\t\t\t[\"Filepath\"] = \"" + Songs[i].Filepath + "\",\n\t\t\t[\"Filename\"] = \"" + Songs[i].Filename + "\",\n\t\t\t[\"Tracks\"] =\"\n\t\t\t{\n");
+                    for(int e = 0; i < Songs[i].Tracks.Length; ++e)
+                    {
+                        w.Write("\t\t\t\t[" + (e + 1) + "] =\n\t\t\t\t\n\t\t\t\t\t[\"Id\"] =\"" + Songs[i].Tracks[e].Id + "\",\n\t\t\t\t\t[\"Name\"] =\"" + Songs[i].Tracks[e].Name + "\"\n\t\t\t\t}");
+                        if (e + 1 < Songs[i].Tracks.Length) w.Write(",");
+                        w.Write("\n");
+                    }
+                    w.Write("\t\t\t}");
+                    if (i + 1 < Songs.Length) w.Write(",");
+                    w.Write("\n");
+                }
+                w.Write("}\n");
             }
             private void GetObject(string file, ref int i)
             {

@@ -60,6 +60,10 @@ namespace JukeBoxSyncer
         private void writeToPlugin(ClientPluginData[] data)
         {
             //write to files here
+            for(int i = 0; i < data.Length; ++i)
+            {
+                data[i].data.Write();
+            }
         }
         public void SyncRemote()
         {
