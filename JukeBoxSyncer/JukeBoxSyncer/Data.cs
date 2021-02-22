@@ -13,9 +13,11 @@ namespace JukeBoxSyncer
         public int id;
         public bool found = false;
         public PluginData PData;
-        public PluginInputs PInputs;
+        public List<PluginInputs> PInputs = new List<PluginInputs>();
         public string account;
         public DateTime SyncTime;
+        public int inpCount = 0;
+        private bool IWroteData = false;
         public Data(int i, DateTime at)
         {
             id = i;
@@ -38,24 +40,29 @@ namespace JukeBoxSyncer
             for(int i = 0; i < accountnames.Length; ++i)
             {
                 string all = accountnames[i] + "\\AllServers";
-                string JBInputs = all + "\\JukeBoxInputs.plugindata";
+                string[] JBInputs = Directory.GetFiles(all, "JukeBoxInputs*.plugindata");
                 if (!Directory.Exists(all))
                 {
                     Directory.CreateDirectory(all);
                 }
-                if (!File.Exists(JBInputs))
+                bool found = false;
+                foreach(string item in JBInputs)
                 {
-                    File.Create(JBInputs);
+                    PluginInputs temp;
+                    using (StreamReader r = new StreamReader(item))
+                    {
+                        string file = r.ReadToEnd();
+                        temp = new PluginInputs(file);
+                    }
+                    if (temp.Inputs.IsActive && temp.Inputs.Timecode != SyncTime.ToBinary())
+                    {
+                        PInputs.Add(temp);
+                        found = true;
+                    }
                 }
-                PluginInputs temp;
-                using (StreamReader r = new StreamReader(JBInputs))
+                if (found && !IWroteData)
                 {
-                    string file = r.ReadToEnd();
-                    temp = new PluginInputs(file);
-                }
-                if(temp.Inputs.IsActive && temp.Inputs.Timecode != SyncTime.ToBinary())
-                {
-                    PInputs = temp;
+                    IWroteData = true;
                     string JBData = all + "\\JukeBoxData.plugindata";
                     account = accountnames[i];
                     if (!File.Exists(JBData))
@@ -77,7 +84,10 @@ namespace JukeBoxSyncer
             {
                 PData.Write(account);
             }
-            PInputs.Write();
+            for(int i = 0; i < PInputs.Count; ++i)
+            {
+                PInputs[i].Write();
+            }
         }
         public class PluginInputs
         {

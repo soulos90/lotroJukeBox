@@ -8,6 +8,12 @@ dirPath = {}; -- table holding directory path
 dirPath[1] = "/"; -- set first item as root dir
 librarySize = 0;
 searchMode = false;
+inputID = 0;
+clientID = -1;
+timeCode = 0;
+LookingFor = 0;
+SaveDone = false;
+LoadDone = false;
 
 -- fix to prevent Vindar patch from messing up anything since it's not needed
 JukeBoxLoad = Turbine.PluginData.Load;
@@ -17,45 +23,114 @@ Settings = { WindowPosition = { Left = "700", Top = "20", Width = "342", Height 
 CharSettings = {
 };
 
+InputDB = {
+	Id = Self:clientID,
+	Timecode = Self:timeCode,
+	IsActive = true,
+	LookingFor = Self:LookingFor,
+	Commands = {
+	}
+}
+SyncDB = {
+	Commands = {
+	}
+}
 SongDB = {
 	Directories = {
 	},
 	Songs = {	
 	}
 };
-InputDB = {
-	Inputs = {
-
-	}
-};
 SearchDB = {
 };
 Self:SetWantsUpdates(true);
 previousGameTime = Turbine.Engine.GetGameTime();
+self.UnloadSet = false;
 function JukeBoxWindow:Update()
+	if not self.UnloadSet then
+		self.UnloadSet = true;
+		Plugins["JukeBox"].Unload = function(self,sender,args)
+			UnloadMe();
+		end
+	end
 	local currentGameTime = Turbine.Engine.GetGameTime();
 	local delta = currentGameTime - previousGameTime;
-	if( delta >= 10 ) then
+	if( delta > 10 ) then
+		Self:SetWantsUpdates(false);
 		JukeBoxWindow:Communicate();
-		previousGameTime = currentGameTime;
 	end
 end
 
 function JukeBoxWindow:Communicate()
-	TempDB = JukeBoxLoad( Turbine.DataScope.Character, "JukeBoxData") or TempDB;
-	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxData", InputDB,
-		function( result, message )
-			if ( result ) then
-				--Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["sh_saved"] .. "</rgb>");
-			else
-				Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["sh_notsaved"] .. " " .. message .. "</rgb>" );
-			end
-		end);	
-	InputDB = TempDB;
-	if ( InputDB.Inputs.UpdateSongs ) then
-		Self:UpdateSongs();
+	SaveDone = false;
+	LoadDone = false;
+	JukeBoxLoad( Turbine.DataScope.Character, "JukeBoxSync" .. Self:LookingFor, FinishedSyncLoad( result, message ));
+	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxInput" .. Self:inputID, InputDB, FinishedInputSave( result, message ));
+	Self:inputID = (Self:inputID + 1) % 1000;
+end
+
+function JukeBoxWindow:FinishedSyncLoad(result, message)
+	if ( result ) then
+		Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["loaded "] .. message .. "</rgb>");
+		if IsTidy(message) then
+			ProcessSync(message);
+			LookingFor = (LookingFor + 1) % 1000;
+			InputDB.LookingFor = LookingFor;
+			JukeBoxLoad( Turbine.DataScope.Character, "JukeBoxSync" .. Self:LookingFor, FinishedSyncLoad( result, message ));
+		else
+			FinishedCommunicate(2);
+	else
+		Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["sync not found"] .. " " .. message .. "</rgb>" );
+		FinishedCommunicate(2);
 	end
 end
+
+function JukeBoxWindow:FinishedInputSave(result, message)
+	if ( result ) then
+		Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["jb_saved"] .. "</rgb>");
+	else
+		Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["jb_notsaved"] .. " " .. message .. "</rgb>" );
+	end
+	FinishedCommunicate(1);
+end
+
+function JukeBoxWindow:FinishedCommunicate(sender)
+	if(sender == 1) then
+		SaveDone = true;
+	else
+		LoadDone = true;
+	end
+	if(SaveDone and LoadDone) then
+		Self:SetWantsUpdates(true);
+		previousGameTime = Turbine.Engine.GetGameTime();
+	end
+end
+
+function JukeBoxWindow:ProcessSync(data)
+	SyncDB = data;
+	for i = SyncDB.Commands do
+		CommandSwitch(i);
+	end
+end
+
+function JukeBoxWindow:CommandSwitch(command)
+	if(SyncDB.Commands.CommandType == "SetID") then
+		clientID = SyncDB.Commands.Details;
+	else if(SyncDB.Commands.CommandType == "SetTime")--TODO: add more commands
+		timeCode = SyncDB.Commands.Details;
+	end
+end
+
+function JukeBoxWindow:IsTidy(data)
+	--TODO: check if file is complete
+	return true;
+end
+
+function JukeBoxWindow:UnloadMe()
+	InputDB.IsActive = false;
+	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxInput" .. Self:inputID, InputDB );
+end
+
 
 function JukeBoxWindow:UpdateSongs()
 	SongDB = JukeBoxLoad( Turbine.DataScope.Account , "JukeBoxData") or SongDB;
