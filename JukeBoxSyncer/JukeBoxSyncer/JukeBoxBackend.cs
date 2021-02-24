@@ -23,6 +23,7 @@ namespace JukeBoxSyncer
         private static Semaphore LocalSem;
         private static Semaphore RemoteSem;
         DateTime madeAt;
+        private bool newSongs = false;
         public JukeBoxBackend()
         {
             madeAt = DateTime.Now;
@@ -58,11 +59,13 @@ namespace JukeBoxSyncer
         {
             d = new Data(id, madeAt);
             s = new Settings(id, d.account);
+            newSongs = d.newSongs;
         }
-        private void readFromPlugin(ref Data d, ref Settings s, int id, Data.PluginData copy)
+        private void readFromPlugin(ref Data d, ref Settings s, int id, PluginData copy)
         {
             d = new Data(id, madeAt, copy);
             s = new Settings(id, d.account);
+            newSongs = d.newSongs;
         }
         private void processData(ref botInstructions BI, ClientPluginData[] data)
         {
@@ -71,6 +74,10 @@ namespace JukeBoxSyncer
         }
         private void writeToPlugin(ClientPluginData[] data)
         {
+            if (data[0].data.newSongs)
+            {
+                data[0].data.WriteData();
+            }
             //write to files here
             for(int i = 0; i < data.Length; ++i)
             {

@@ -17,6 +17,7 @@ namespace JukeBoxSyncer
         public string account;
         public DateTime SyncTime;
         public int inpCount = 0;
+        public bool newSongs = false;
         private bool IWroteData = false;
         public Data(int i, DateTime at)
         {
@@ -141,12 +142,14 @@ namespace JukeBoxSyncer
                     {
                         PData.Songs.RemoveAt(SI);
                         ++i;
+                        newSongs = true;
                     }
                     else if (Songs.Length > i + 1 && Songs[i + 1].Replace(path, "") == PData.Songs[SI].Filename)//if if next file matches current file in list then current file is new
                     {
                         PData.Songs.Insert(SI, ReadSongF(path,songname));
                         ++i;
                         ++SI;
+                        newSongs = true;
                     }
                     else//multiple consecutive differences, need to iterate through arrays further to detect desync
                     {
@@ -159,6 +162,7 @@ namespace JukeBoxSyncer
                                 if (tempname == PData.Songs[SI].Filename)
                                 {
                                     fileE = true;
+                                    newSongs = true;
                                 }
                             }
                             if(!listE && j < PData.Songs.Count)
@@ -166,6 +170,7 @@ namespace JukeBoxSyncer
                                 if(PData.Songs[j].Filename == songname)
                                 {
                                     listE = true;
+                                    newSongs = true;
                                 }
                             }
                         }
@@ -390,16 +395,16 @@ namespace JukeBoxSyncer
             }
             return exist;
         }
-        public void Write(bool newSongs)
+        public void Write()
         {
-            if (newSongs)
-            {
-                PData.Write(account);
-            }
             for(int i = 0; i < PInputs.Count; ++i)
             {
                 PInputs[i].Write();
             }
+        }
+        public void WriteData()
+        {
+            PData.Write(account);
         }
         public class PluginInputs
         {
