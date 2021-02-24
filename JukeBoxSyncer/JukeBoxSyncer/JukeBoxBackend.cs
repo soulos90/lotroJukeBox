@@ -40,7 +40,14 @@ namespace JukeBoxSyncer
             for (int i = 0; i < ids.Length; ++i)
             {
                 vals.clients[i].id = ids[i];
-                readFromPlugin(ref clients[i].data, ref clients[i].settings, ids[i]);
+                if(i == 0)
+                {
+                    readFromPlugin(ref clients[i].data, ref clients[i].settings, ids[i]);
+                }
+                else
+                {
+                    readFromPlugin(ref clients[i].data, ref clients[i].settings, ids[i], clients[0].data.PData);
+                }
             }
             processData(ref vals, clients);
             //pull input from jukebox plugindata and send decisions to jukebox plugindata
@@ -50,6 +57,11 @@ namespace JukeBoxSyncer
         private void readFromPlugin(ref Data d, ref Settings s, int id)
         {
             d = new Data(id, madeAt);
+            s = new Settings(id, d.account);
+        }
+        private void readFromPlugin(ref Data d, ref Settings s, int id, Data.PluginData copy)
+        {
+            d = new Data(id, madeAt, copy);
             s = new Settings(id, d.account);
         }
         private void processData(ref botInstructions BI, ClientPluginData[] data)
