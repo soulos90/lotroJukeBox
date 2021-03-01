@@ -110,12 +110,20 @@ namespace WindowsManipulator
                 clients.Add(temp);
             }
             Report("found " + clients.Count + " clients");
-            UpdateText();
         }
-        public void Report(string text)
+        public void Report(string t)
         {
-            report += text + "\r\n";
-            UpdateText();
+            report += t + "\r\n";
+            if (text.InvokeRequired)
+            {
+                text.BeginInvoke((MethodInvoker)delegate {
+                    UpdateText(report);
+                });
+            }
+            else
+            {
+                UpdateText();
+            }
         }
         public void UpdateText()
         {
@@ -125,6 +133,15 @@ namespace WindowsManipulator
                 text.Text += item.label + "\r\n";
             }
             text.Text += report;
+        }
+        public void UpdateText(string r)
+        {
+            text.Text = "";
+            foreach (Client item in clients)
+            {
+                text.Text += item.label + "\r\n";
+            }
+            text.Text += r;
         }
         public void setText(int id, string text)
         {
@@ -163,7 +180,7 @@ namespace WindowsManipulator
             }
             catch (Exception e)
             {
-                Program.form.Report(e.Message);
+                Report(e.Message);
             }
         }
         public bool abort = false;
@@ -174,7 +191,7 @@ namespace WindowsManipulator
                 if (!pause)
                 {
                     //man.SyncR();
-                    Program.form.Report("net Thread Called");
+                    Report("net Thread Called");
                     Thread.Sleep(60000);
                 }
             }
@@ -186,7 +203,7 @@ namespace WindowsManipulator
                 if (!pause)
                 {
                     man.ManageLocal();
-                    Program.form.Report("local Thread Called");
+                    Report("local Thread Called");
                     Thread.Sleep(10000);
                 }
             }
