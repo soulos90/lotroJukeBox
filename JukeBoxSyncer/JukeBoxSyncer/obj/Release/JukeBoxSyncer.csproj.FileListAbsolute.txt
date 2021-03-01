@@ -1,0 +1,6 @@
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\obj\Release\JukeBoxSyncer.csprojAssemblyReference.cache
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\obj\Release\JukeBoxSyncer.csproj.CoreCompileInputs.cache
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\bin\Release\JukeBoxSyncer.dll
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\bin\Release\JukeBoxSyncer.pdb
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\obj\Release\JukeBoxSyncer.dll
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSyncer\JukeBoxSyncer\obj\Release\JukeBoxSyncer.pdb

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31005.135
+VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "windowsManipulator", "windowsManipulator\windowsManipulator.csproj", "{684D1F93-0A1F-40E3-BFD2-F6AA2E837EE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsManipulator", "WindowsManipulator\WindowsManipulator.csproj", "{FEE19BBC-85E2-46A5-9181-BA36F4FE6C42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{684D1F93-0A1F-40E3-BFD2-F6AA2E837EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{684D1F93-0A1F-40E3-BFD2-F6AA2E837EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{684D1F93-0A1F-40E3-BFD2-F6AA2E837EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{684D1F93-0A1F-40E3-BFD2-F6AA2E837EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE19BBC-85E2-46A5-9181-BA36F4FE6C42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE19BBC-85E2-46A5-9181-BA36F4FE6C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE19BBC-85E2-46A5-9181-BA36F4FE6C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE19BBC-85E2-46A5-9181-BA36F4FE6C42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0E13A28D-55FC-424A-9FE2-27C179E9F79E}
+		SolutionGuid = {3E6922C6-A5A4-42AC-968F-31E5CFD8FDF4}
 	EndGlobalSection
 EndGlobal

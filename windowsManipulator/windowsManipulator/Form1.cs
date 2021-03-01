@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using JukeBoxSyncer;
 
-namespace windowsManipulator
+namespace WindowsManipulator
 {
     public partial class Form1 : Form
     {
@@ -30,13 +30,9 @@ namespace windowsManipulator
         public Form1()
         {
             InitializeComponent();
-            
-        }
-        public void SetMan(winMan win)
-        {
-            man = win;
             InitInterface();
-            
+            man = new winMan(this);
+            StartThreads();
         }
         public void Resizer(object sender, System.EventArgs e)
         {
@@ -59,8 +55,8 @@ namespace windowsManipulator
         }
         public void CreateButtons()
         {
-            
-            for(int i = 0; i < Button1.Buttons.Length; ++i)
+
+            for (int i = 0; i < Button1.Buttons.Length; ++i)
             {
                 Button1 temp = new Button1(man);
                 temp.Text = Button1.Buttons[i].label;
@@ -76,7 +72,7 @@ namespace windowsManipulator
                 width += temp.Width;
             }
             int length = 0;
-            for(int i = 0; i < buttons.Count; ++i)
+            for (int i = 0; i < buttons.Count; ++i)
             {
                 buttons[i].Left = (this.ClientSize.Width / 2) - (width / 2) + length;
                 length += buttons[i].Width;
@@ -90,7 +86,7 @@ namespace windowsManipulator
             text.Multiline = true;
             // Add vertical scroll bars to the TextBox control.
             text.ScrollBars = ScrollBars.Vertical;
-            
+
             // Set WordWrap to true to allow text to wrap to the next line.
             text.WordWrap = true;
             text.Enabled = true;
@@ -99,7 +95,7 @@ namespace windowsManipulator
             text.Text = "Press a key on keyboard to target correct device\n";
 
             /* Set the size of the control based on the PreferredHeight and PreferredWidth values. */
-            text.Size = new Size(this.ClientSize.Width, this.ClientSize.Height- (this.ClientSize.Height/3));
+            text.Size = new Size(this.ClientSize.Width, this.ClientSize.Height - (this.ClientSize.Height / 3));
 
             Controls.Add(text);
         }
@@ -124,13 +120,13 @@ namespace windowsManipulator
         public void UpdateText()
         {
             text.Text = "";
-            foreach(Client item in clients)
+            foreach (Client item in clients)
             {
                 text.Text += item.label + "\r\n";
             }
             text.Text += report;
         }
-        public void setText(int id,string text)
+        public void setText(int id, string text)
         {
             Client temp = clients.Find(f => f.id == id);
             temp.label = text;
@@ -139,9 +135,9 @@ namespace windowsManipulator
         public void Pause()
         {
             pause = !pause;
-            if((R.ThreadState == ThreadState.Running || R.ThreadState == ThreadState.WaitSleepJoin) && (L.ThreadState == ThreadState.Running || L.ThreadState == ThreadState.WaitSleepJoin))
+            if ((R.ThreadState == ThreadState.Running || R.ThreadState == ThreadState.WaitSleepJoin) && (L.ThreadState == ThreadState.Running || L.ThreadState == ThreadState.WaitSleepJoin))
             {
-                Closer(null,null);
+                Closer(null, null);
             }
             else
             {
@@ -165,7 +161,7 @@ namespace windowsManipulator
                 L.Start();
                 Closing += Closer;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Program.form.Report(e.Message);
             }
@@ -177,7 +173,7 @@ namespace windowsManipulator
             {
                 if (!pause)
                 {
-                    man.SyncR();
+                    //man.SyncR();
                     Program.form.Report("net Thread Called");
                     Thread.Sleep(60000);
                 }

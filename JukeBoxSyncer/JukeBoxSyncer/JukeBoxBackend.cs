@@ -20,28 +20,25 @@ namespace JukeBoxSyncer
     }
     public class JukeBoxBackend
     {
-        private static Semaphore LocalSem;
-        private static Semaphore RemoteSem;
+        private static Semaphore OneAtATime;
         DateTime madeAt;
         private bool newSongs = false;
         public JukeBoxBackend()
         {
             madeAt = DateTime.Now;
-            LocalSem = new Semaphore(0, 1);
-            LocalSem.Release(1);
-            RemoteSem = new Semaphore(0, 1);
-            RemoteSem.Release(1);
+            OneAtATime = new Semaphore(0, 1);
+            OneAtATime.Release(1);
         }
         public botInstructions SyncLocal(int[] ids)
         {
-            LocalSem.WaitOne();
+            OneAtATime.WaitOne();
             botInstructions vals = new botInstructions();
             vals.clients = new client[ids.Length];
             ClientPluginData[] clients = new ClientPluginData[ids.Length];
             for (int i = 0; i < ids.Length; ++i)
             {
                 vals.clients[i].id = ids[i];
-                if(i == 0)
+                if (i == 0)
                 {
                     readFromPlugin(ref clients[i].data, ref clients[i].settings, ids[i]);
                 }
@@ -52,7 +49,7 @@ namespace JukeBoxSyncer
             }
             processData(ref vals, clients);
             //pull input from jukebox plugindata and send decisions to jukebox plugindata
-            LocalSem.Release();
+            OneAtATime.Release();
             return vals;//vals is data that winmanip will use to perform actions on lotro clients
         }
         private void readFromPlugin(ref Data d, ref Settings s, int id)
@@ -79,16 +76,16 @@ namespace JukeBoxSyncer
                 data[0].data.WriteData();
             }
             //write to files here
-            for(int i = 0; i < data.Length; ++i)
+            for (int i = 0; i < data.Length; ++i)
             {
                 data[i].data.Write();
             }
         }
         public void SyncRemote()
         {
-            RemoteSem.WaitOne();
+            OneAtATime.WaitOne();
             //connect to raymionds server to make sure networked song data is syncced
-            RemoteSem.Release();
+            OneAtATime.Release();
         }
     }
 }

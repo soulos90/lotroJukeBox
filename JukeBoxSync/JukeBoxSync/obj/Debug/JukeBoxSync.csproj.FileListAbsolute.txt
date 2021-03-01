@@ -10,3 +10,16 @@ C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj
 C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.CopyComplete
 C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.exe
 C:\Users\soulo\source\repos\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.pdb
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.exe.config
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.exe
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSync.pdb
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csprojAssemblyReference.cache
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.Form1.resources
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.Properties.Resources.resources
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.GenerateResource.cache
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.CoreCompileInputs.cache
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.csproj.CopyComplete
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.exe
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\obj\Debug\JukeBoxSync.pdb
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSyncer.dll
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\JukeBoxSync\JukeBoxSync\bin\Debug\JukeBoxSyncer.pdb

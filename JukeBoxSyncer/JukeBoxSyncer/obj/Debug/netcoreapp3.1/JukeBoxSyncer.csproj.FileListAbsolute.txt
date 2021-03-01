@@ -1,9 +1,0 @@
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.csprojAssemblyReference.cache
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.AssemblyInfoInputs.cache
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.AssemblyInfo.cs
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.csproj.CoreCompileInputs.cache
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\bin\Debug\netcoreapp3.1\JukeBoxSyncer.deps.json
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\bin\Debug\netcoreapp3.1\JukeBoxSyncer.dll
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\bin\Debug\netcoreapp3.1\JukeBoxSyncer.pdb
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.dll
-C:\Users\soulo\source\repos\JukeBoxSyncer\JukeBoxSyncer\obj\Debug\netcoreapp3.1\JukeBoxSyncer.pdb

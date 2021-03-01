@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31005.135
+VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JukeBoxSyncer", "JukeBoxSyncer\JukeBoxSyncer.csproj", "{6A013C66-1BFF-4D1A-B763-1F18389FA472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JukeBoxSyncer", "JukeBoxSyncer\JukeBoxSyncer.csproj", "{5F4DA7A4-E80F-4F06-8403-392F6D1A7A40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6A013C66-1BFF-4D1A-B763-1F18389FA472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A013C66-1BFF-4D1A-B763-1F18389FA472}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A013C66-1BFF-4D1A-B763-1F18389FA472}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A013C66-1BFF-4D1A-B763-1F18389FA472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4DA7A4-E80F-4F06-8403-392F6D1A7A40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4DA7A4-E80F-4F06-8403-392F6D1A7A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4DA7A4-E80F-4F06-8403-392F6D1A7A40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4DA7A4-E80F-4F06-8403-392F6D1A7A40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5413EF33-AC02-4434-8575-25647E8C9BE0}
+		SolutionGuid = {5280CD03-B115-4328-8CB4-687466FF9991}
 	EndGlobalSection
 EndGlobal

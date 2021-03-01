@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WindowsManipulator")]
+[assembly: AssemblyTitle("JukeBoxSyncer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WindowsManipulator")]
+[assembly: AssemblyProduct("JukeBoxSyncer")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fee19bbc-85e2-46a5-9181-ba36f4fe6c42")]
+[assembly: Guid("5f4da7a4-e80f-4f06-8403-392f6d1a7a40")]
 
 // Version information for an assembly consists of the following four values:
 //

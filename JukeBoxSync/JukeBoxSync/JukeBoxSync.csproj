@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JukeBoxSyncer">
-      <HintPath>..\..\JukeBoxSyncer\JukeBoxSyncer\bin\Release\netstandard2.0\JukeBoxSyncer.dll</HintPath>
+    <Reference Include="JukeBoxSyncer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\JukeBoxSyncer\JukeBoxSyncer\bin\Release\JukeBoxSyncer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

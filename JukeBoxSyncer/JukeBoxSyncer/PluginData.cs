@@ -74,7 +74,7 @@ namespace JukeBoxSyncer
             }
             using (StreamWriter w = new StreamWriter(JBData))
             {
-                w.Write("return\n" + 
+                w.Write("return\n" +
                         "{\n");
                 WriteDirectories(w);
                 WriteSongs(w);
@@ -83,7 +83,7 @@ namespace JukeBoxSyncer
         }
         private void WriteDirectories(StreamWriter w)
         {
-            w.Write("\t[\"Directories\"] =\n" + 
+            w.Write("\t[\"Directories\"] =\n" +
                     "\t{\n");
             for (int i = 0; i < Directories.Length; ++i)
             {
@@ -98,12 +98,12 @@ namespace JukeBoxSyncer
         }
         private void WriteSongs(StreamWriter w)
         {
-            w.Write("\t[\"Songs\"] =\n" + 
+            w.Write("\t[\"Songs\"] =\n" +
                     "\t{");
             for (int i = 0; i < Songs.Count; ++i)
             {
-                w.Write("\t\t[" + (i + 1) + "] =\n" + 
-                        "\t\t{\n" + 
+                w.Write("\t\t[" + (i + 1) + "] =\n" +
+                        "\t\t{\n" +
                         "\t\t\t[\"Filepath\"] = \"" + Songs[i].Filepath + "\",\n" +
                         "\t\t\t[\"Filename\"] = \"" + Songs[i].Filename + "\",\n" +
                         "\t\t\t[\"Length\"] = \"" + Songs[i].seconds + "\",\n" +
@@ -195,11 +195,11 @@ namespace JukeBoxSyncer
                         {
                             val.Filepath = GetWord(file, ref i);
                         }
-                        else if(label == "Filename")
+                        else if (label == "Filename")
                         {
                             val.Filename = GetWord(file, ref i);
                         }
-                        else if(label == "Length")
+                        else if (label == "Length")
                         {
                             val.seconds = int.Parse(GetWord(file, ref i));
                         }

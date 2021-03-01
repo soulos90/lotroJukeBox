@@ -1,5 +1,5 @@
 ﻿
-namespace windowsManipulator
+namespace WindowsManipulator
 {
     partial class Form1
     {
@@ -29,17 +29,10 @@ namespace windowsManipulator
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 250);
-            this.Name = "WinManager";
-            this.Text = "WinManager";
-            this.ResumeLayout(false);
-
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Text = "Form1";
         }
 
         #endregion

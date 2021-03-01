@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Runtime;
 using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using Interceptor;
+using WindowsInput;
 using JukeBoxSyncer;
 
-namespace windowsManipulator
+namespace WindowsManipulator
 {
     public struct Rect
     {
@@ -22,7 +20,7 @@ namespace windowsManipulator
     public struct lotroclient
     {
         public Process proc;
-        
+
         public Rect rect;
         public int id;
     }
@@ -38,22 +36,13 @@ namespace windowsManipulator
         public static extern IntPtr WindowFromPoint(Point lpPoint);
 
         public JukeBoxBackend syncer = new JukeBoxBackend();
-        Input input = new Input();
+        InputSimulator input = new InputSimulator();
         List<lotroclient> t = null;
         public Form1 form;
         public winMan(Form1 f)
         {
             form = f;
-            form.SetMan(this);
-            input.KeyboardFilterMode = KeyboardFilterMode.All;
-            input.Load();
-            input.OnKeyPressed += initKeyPress;
-        }
-        public void initKeyPress(object sender, KeyPressedEventArgs args)
-        {
             ScanC();
-            input.OnKeyPressed -= initKeyPress;
-            form.StartThreads();
         }
         public void ButtonClicked(int id)
         {
@@ -95,24 +84,31 @@ namespace windowsManipulator
                 {
                     form.Report("rect of " + temp.id + " " + temp.rect.Left);
                 }
-                catch(Exception e) {}
+                catch (Exception e) { }
                 t.Add(temp);
             }
             form.PopulateForm(t);
         }
         public void ManageLocal()
         {
-            data active = SyncL();
+            botInstructions active = SyncL();
             //execute actions on lotro clients to automatically run plugin
         }
-        public data SyncL()
+        public botInstructions SyncL()
         {
             int[] clients = new int[t.Count];
-            for(int i = 0; i < t.Count; ++i)
+            for (int i = 0; i < t.Count; ++i)
             {
                 clients[i] = t[i].id;
             }
-            return syncer.SyncLocal(clients);
+            if(clients.Length > 0)
+            {
+                return syncer.SyncLocal(clients);
+            }
+            else
+            {
+                return new botInstructions();
+            }
         }
         public void SyncR()
         {
@@ -123,34 +119,34 @@ namespace windowsManipulator
             int x = chosen.rect.Right - ((chosen.rect.Right - chosen.rect.Left) / 2), y = chosen.rect.Bottom - ((chosen.rect.Bottom - chosen.rect.Top) / 2);
             int count = 1;
             bool visible = true;
-            while (WindowFromPoint(new Point(x,y)) != chosen.proc.MainWindowHandle)
+            while (WindowFromPoint(new Point(x, y)) != chosen.proc.MainWindowHandle)
             {
-                input.SendKey(Keys.RightAlt, KeyState.Down);
-                for(int i = 0; i < count; ++i)
+                input.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.MENU);
+                for (int i = 0; i < count; ++i)
                 {
-                    input.SendKey(Keys.Tab);
+                    input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.TAB);
                 }
-                input.SendKey(Keys.RightAlt, KeyState.Up);
+                input.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
                 ++count;
-                if(count > 15)
+                if (count > 15)
                 {
                     visible = false;
                     break;
                 }
                 Thread.Sleep(200);
             }
-            if(visible)
+            if (visible)
             {
-                input.MoveMouseTo(x, y);
-                input.SendLeftClick();
+                input.Mouse.MoveMouseTo(x, y);
+                input.Mouse.LeftButtonClick();
                 Thread.Sleep(100);
-                
+                input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.VK_K);
             }
             else
             {
-                form.setText(chosen.id,"cant see lotro client " + chosen.id);
+                form.setText(chosen.id, "cant see lotro client " + chosen.id);
             }
         }
-        
+
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace JukeBoxSyncer
 {
-    
+
     public class Data
     {
         public int id;
@@ -44,7 +44,7 @@ namespace JukeBoxSyncer
                 Directory.CreateDirectory(pluginData);
             }
             string[] accountnames = Directory.GetDirectories(pluginData);
-            for(int i = 0; i < accountnames.Length; ++i)
+            for (int i = 0; i < accountnames.Length; ++i)
             {
                 string all = accountnames[i] + "/AllServers";
                 if (!Directory.Exists(all))
@@ -53,7 +53,7 @@ namespace JukeBoxSyncer
                 }
                 string[] JBInputs = Directory.GetFiles(all, "JukeBoxInputs*.plugindata");
                 bool found = false;
-                foreach(string item in JBInputs)
+                foreach (string item in JBInputs)
                 {
                     PluginInputs temp;
                     using (StreamReader r = new StreamReader(item))
@@ -107,12 +107,12 @@ namespace JukeBoxSyncer
                 List<string> dRects = new List<string>();
                 GetDirectories(music, music, ref dRects);
                 PData.Directories = new string[dRects.Count];
-                for(int i = 0; i < dRects.Count; ++i)
+                for (int i = 0; i < dRects.Count; ++i)
                 {
                     PData.Directories[i] = dRects[i];
                 }
                 int songnum = 0;
-                for(int i = 0; i < PData.Directories.Length; ++i)
+                for (int i = 0; i < PData.Directories.Length; ++i)
                 {
                     CheckSongsInDirectory(music + PData.Directories[i], ref songnum);
                 }
@@ -130,7 +130,7 @@ namespace JukeBoxSyncer
             int i = 0;
             while (cont)
             {
-                if(Songs.Length > i && PData.Songs.Count > SI)//look at files in directories in order, while looking at files in list in order
+                if (Songs.Length > i && PData.Songs.Count > SI)//look at files in directories in order, while looking at files in list in order
                 {
                     string songname = Songs[i].Replace(path, "");
                     if (songname == PData.Songs[SI].Filename)//if still synced continue
@@ -146,7 +146,7 @@ namespace JukeBoxSyncer
                     }
                     else if (Songs.Length > i + 1 && Songs[i + 1].Replace(path, "") == PData.Songs[SI].Filename)//if if next file matches current file in list then current file is new
                     {
-                        PData.Songs.Insert(SI, ReadSongF(path,songname));
+                        PData.Songs.Insert(SI, ReadSongF(path, songname));
                         ++i;
                         ++SI;
                         newSongs = true;
@@ -154,9 +154,9 @@ namespace JukeBoxSyncer
                     else//multiple consecutive differences, need to iterate through arrays further to detect desync
                     {
                         bool fileE = false, listE = false;
-                        for(int e = i + 1, j = SI + 1; (e < Songs.Length && !fileE) || (j < PData.Songs.Count && !listE); ++e, ++j)
+                        for (int e = i + 1, j = SI + 1; (e < Songs.Length && !fileE) || (j < PData.Songs.Count && !listE); ++e, ++j)
                         {
-                            if(!fileE && e < Songs.Length)
+                            if (!fileE && e < Songs.Length)
                             {
                                 string tempname = Songs[e].Replace(path, "");
                                 if (tempname == PData.Songs[SI].Filename)
@@ -165,23 +165,24 @@ namespace JukeBoxSyncer
                                     newSongs = true;
                                 }
                             }
-                            if(!listE && j < PData.Songs.Count)
+                            if (!listE && j < PData.Songs.Count)
                             {
-                                if(PData.Songs[j].Filename == songname)
+                                if (PData.Songs[j].Filename == songname)
                                 {
                                     listE = true;
                                     newSongs = true;
                                 }
                             }
                         }
-                        if(listE && fileE)//uh oh... this algorithm doesn't work
+                        if (listE && fileE)//uh oh... this algorithm doesn't work
                         {
 
-                        }else if(listE)//file exists eventually in list meaning lots of songs in list removed from files
+                        }
+                        else if (listE)//file exists eventually in list meaning lots of songs in list removed from files
                         {
-                            while(SI < PData.Songs.Count)
+                            while (SI < PData.Songs.Count)
                             {
-                                if(PData.Songs[SI].Filename != songname)
+                                if (PData.Songs[SI].Filename != songname)
                                 {
                                     PData.Songs.RemoveAt(SI);
                                 }
@@ -190,9 +191,10 @@ namespace JukeBoxSyncer
                                     break;
                                 }
                             }
-                        }else if (fileE)//current song in list exists eventually in files meaning lots of songs were added
+                        }
+                        else if (fileE)//current song in list exists eventually in files meaning lots of songs were added
                         {
-                            while(i < Songs.Length)
+                            while (i < Songs.Length)
                             {
                                 string tempname = Songs[i].Replace(path, "");
                                 if (tempname != PData.Songs[SI].Filename)
@@ -207,12 +209,12 @@ namespace JukeBoxSyncer
                         }
                     }
                 }
-                else if(Songs.Length > i)//reached end of list rest of song files need to be added
+                else if (Songs.Length > i)//reached end of list rest of song files need to be added
                 {
                     string tempname = Songs[i++].Replace(path, "");
-                    PData.Songs.Add(ReadSongF(path,tempname));
+                    PData.Songs.Add(ReadSongF(path, tempname));
                 }
-                else if(PData.Songs.Count > SI)//reached end of files rest of songs in list need to be removed
+                else if (PData.Songs.Count > SI)//reached end of files rest of songs in list need to be removed
                 {
                     PData.Songs.RemoveAt(SI);
                 }
@@ -240,17 +242,17 @@ namespace JukeBoxSyncer
                     string line = r.ReadLine();
                     if (header)
                     {
-                        if(line[0] == 'L')
+                        if (line[0] == 'L')
                         {
                             int i = 1;
-                            while (line[i] !>= '0' && line[i] !<= '9') ++i;
+                            while (!(line[i] >= '0') && !(line[i] <= '9')) ++i;
                             string val1 = "", val2 = "";
-                            while(line[i] >= '0' && line[i] <= '9')
+                            while (line[i] >= '0' && line[i] <= '9')
                             {
                                 val1 += line[i];
                                 ++i;
                             }
-                            if(line[i] == '/')
+                            if (line[i] == '/')
                             {
                                 ++i;
                             }
@@ -261,14 +263,14 @@ namespace JukeBoxSyncer
                             }
                             L = int.Parse(val1) / int.Parse(val2);
                         }
-                        else if(line[0] == 'Q')
+                        else if (line[0] == 'Q')
                         {
                             List<int> vals = new List<int>();
-                            for(int i = 1; i < line.Length;++i)
+                            for (int i = 1; i < line.Length; ++i)
                             {
                                 string temp = "";
-                                while (line[i] !>= '0' && line[i] !<= '9')++i;
-                                
+                                while (!(line[i] >= '0') && !(line[i] <= '9')) ++i;
+
                                 while (line[i] >= '0' && line[i] <= '9')
                                 {
                                     temp += line[i];
@@ -277,19 +279,19 @@ namespace JukeBoxSyncer
                             }
                             float modi = 0;
                             float bpm = 0;
-                            for(int i = 0; i < vals.Count; ++i)
+                            for (int i = 0; i < vals.Count; ++i)
                             {
-                                if(i + 1 == vals.Count)
+                                if (i + 1 == vals.Count)
                                 {
                                     bpm = vals[i];
                                 }
-                                if(i % 2 == 0)
+                                if (i % 2 == 0)
                                 {
                                     modi += vals[i] / vals[i + 1];
                                     ++i;
                                 }
                             }
-                            if(modi != 0)
+                            if (modi != 0)
                             {
                                 Q = bpm * modi;
                             }
@@ -298,29 +300,29 @@ namespace JukeBoxSyncer
                                 Q = bpm;
                             }
                         }
-                        else if(line[0] == 'K')
+                        else if (line[0] == 'K')
                         {
                             header = false;
                         }
-                        else if(line[0] == 'T')
+                        else if (line[0] == 'T')
                         {
-                            currentTrack.Name = line[2..];
+                            currentTrack.Name = line.Substring(2);
                         }
-                        else if(line[0] == 'X')
+                        else if (line[0] == 'X')
                         {
                             currentTrack = new PluginData.Track();
-                            currentTrack.Id = line[2..];
+                            currentTrack.Id = line.Substring(2);
                             currentTrack.Name = "";
                             tempTrack.Add(currentTrack);
                         }
                     }
                     else
                     {
-                        if(line[0] == 'X')
+                        if (line[0] == 'X')
                         {
                             header = true;
                             currentTrack = new PluginData.Track();
-                            currentTrack.Id = line[2..];
+                            currentTrack.Id = line.Substring(2);
                             currentTrack.Name = "";
                             tempTrack.Add(currentTrack);
                         }
@@ -336,7 +338,7 @@ namespace JukeBoxSyncer
                                 {
                                     chord = true;
                                 }
-                                while (vals[i][e]! >= '0' && vals[i][e]! <= '9') ++e;
+                                while (!(vals[i][e] >= '0') && !(vals[i][e] <= '9')) ++e;
                                 if (vals[i][e - 1] == '/')
                                 {
                                     val1 = "1";
@@ -349,7 +351,7 @@ namespace JukeBoxSyncer
                                         ++e;
                                     }
                                 }
-                                while (vals[i][e]! >= '0' && vals[i][e]! <= '9') ++e;
+                                while (!(vals[i][e] >= '0') && !(vals[i][e] <= '9')) ++e;
                                 while (vals[i][e] >= '0' && vals[i][e] <= '9')
                                 {
                                     val2 += vals[i][e];
@@ -373,9 +375,9 @@ namespace JukeBoxSyncer
         }
         private void GetDirectories(string path, string root, ref List<string> outs)
         {
-            outs.Add(path.Replace(root,"/"));
+            outs.Add(path.Replace(root, "/"));
             string[] subs = Directory.GetDirectories(path);
-            for(int i = 0; i < subs.Length; ++i)
+            for (int i = 0; i < subs.Length; ++i)
             {
                 GetDirectories(subs[i], root, ref outs);
             }
@@ -397,7 +399,7 @@ namespace JukeBoxSyncer
         }
         public void Write()
         {
-            for(int i = 0; i < PInputs.Count; ++i)
+            for (int i = 0; i < PInputs.Count; ++i)
             {
                 PInputs[i].Write();
             }
@@ -481,7 +483,7 @@ namespace JukeBoxSyncer
                             {
                                 Inputs.Timecode = long.Parse(GetWord(file, ref i));
                             }
-                            else if( label == "IsActive")
+                            else if (label == "IsActive")
                             {
                                 Inputs.IsActive = short.Parse(GetWord(file, ref i)) == 1;
                             }

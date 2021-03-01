@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using JukeBoxSyncer;
@@ -14,15 +8,11 @@ namespace JukeBoxSync
 {
     public partial class Form1 : Form
     {
-        private System.Windows.Forms.ContextMenu contextMenu1;
-        private System.Windows.Forms.MenuItem menuItem1;
-        private System.Windows.Forms.MenuItem menuItem2;
-        private System.Windows.Forms.MenuItem menuItem3;
-        private System.Windows.Forms.MenuItem menuItem4;
+        private ContextMenu contextMenu1;
+        private MenuItem menuItem1, menuItem2, menuItem3, menuItem4;
         public JukeBoxBackend syncer = new JukeBoxBackend();
         private Thread R, L;
-        public bool abort = false;
-        public bool pause = false;
+        public bool abort = false, pause = false;
         public Form1()
         {
             InitializeComponent();
@@ -130,7 +120,7 @@ namespace JukeBoxSync
         }
         public void SyncL()
         {
-            syncer.SyncLocal();
+            syncer.SyncLocal(new int[] { 0 });
         }
         public void SyncR()
         {
