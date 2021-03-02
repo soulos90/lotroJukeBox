@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Runtime;
 using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using WindowsInput;
 using JukeBoxSyncer;
+using WindowsInput;
 
 namespace WindowsManipulator
 {
@@ -24,20 +23,34 @@ namespace WindowsManipulator
         public Rect rect;
         public int id;
     }
+    
     public class winMan
     {
+        private enum ShowWindowEnum
+        {
+            Hide = 0,
+            ShowNormal = 1, ShowMinimized = 2, ShowMaximized = 3,
+            Maximize = 3, ShowNormalNoActivate = 4, Show = 5,
+            Minimize = 6, ShowMinNoActivate = 7, ShowNoActivate = 8,
+            Restore = 9, ShowDefault = 10, ForceMinimized = 11
+        };
         [DllImport("user32.dll")]
         static extern int SetWindowText(IntPtr hWnd, string text);
-
         [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
-
+        static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
         [DllImport("user32.dll")]
-        public static extern IntPtr WindowFromPoint(Point lpPoint);
+        static extern IntPtr WindowFromPoint(Point lpPoint);
+        [DllImport("user32")]
+        static extern int SetCursorPos(int x, int y);
+        [DllImport("user32.dll")]
+        static extern int SetForegroundWindow(IntPtr hwnd);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum flags);
 
+        private InputSimulator input = new InputSimulator();
         public JukeBoxBackend syncer = new JukeBoxBackend();
-        InputSimulator input = new InputSimulator();
-        List<lotroclient> t = null;
+        public List<lotroclient> t = null;
         public Form1 form;
         public winMan(Form1 f)
         {
@@ -80,11 +93,8 @@ namespace WindowsManipulator
                 GetWindowRect(item.MainWindowHandle, ref tempRect);
                 temp.rect = tempRect;
                 SetWindowText(item.MainWindowHandle, "lotro " + temp.id);
-                try
-                {
-                    form.Report("rect of " + temp.id + " " + temp.rect.Left);
-                }
-                catch (Exception e) { }
+                form.Report("rect of " + temp.id + " " + temp.rect.Left);
+                
                 t.Add(temp);
             }
             form.PopulateForm(t);
@@ -92,6 +102,7 @@ namespace WindowsManipulator
         public void ManageLocal()
         {
             botInstructions active = SyncL();
+            
             //execute actions on lotro clients to automatically run plugin
         }
         public botInstructions SyncL()
@@ -116,31 +127,43 @@ namespace WindowsManipulator
         }
         public void SetFocus(lotroclient chosen)
         {
+            if(chosen.proc != null)
+            {
+                if(chosen.proc.MainWindowHandle == IntPtr.Zero)
+                {
+                    ShowWindow(chosen.proc.Handle, ShowWindowEnum.Restore);
+                }
+                SetForegroundWindow(chosen.proc.MainWindowHandle);
+            }
+            
             int x = chosen.rect.Right - ((chosen.rect.Right - chosen.rect.Left) / 2), y = chosen.rect.Bottom - ((chosen.rect.Bottom - chosen.rect.Top) / 2);
             int count = 1;
             bool visible = true;
             while (WindowFromPoint(new Point(x, y)) != chosen.proc.MainWindowHandle)
             {
                 input.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.MENU);
+                Thread.Sleep(1);
                 for (int i = 0; i < count; ++i)
                 {
                     input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.TAB);
+                    Thread.Sleep(1);
                 }
                 input.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
+                Thread.Sleep(1);
                 ++count;
                 if (count > 15)
                 {
                     visible = false;
                     break;
                 }
-                Thread.Sleep(200);
+                Thread.Sleep(1000);
             }
             if (visible)
             {
-                input.Mouse.MoveMouseTo(x, y);
-                input.Mouse.LeftButtonClick();
+                SetCursorPos(x, y);
+                //input.Mouse.LeftButtonClick();
                 Thread.Sleep(100);
-                input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.VK_K);
+                //input.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.VK_K);
             }
             else
             {

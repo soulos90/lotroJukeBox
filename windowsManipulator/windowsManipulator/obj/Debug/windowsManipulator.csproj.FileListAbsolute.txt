@@ -1,9 +1,6 @@
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsManipulator.exe.config
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsManipulator.exe
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsManipulator.pdb
-D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.dll
-D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.pdb
-D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.xml
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\obj\Debug\WindowsManipulator.csprojAssemblyReference.cache
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\obj\Debug\WindowsManipulator.Properties.Resources.resources
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\obj\Debug\WindowsManipulator.csproj.GenerateResource.cache
@@ -13,3 +10,6 @@ D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulat
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\obj\Debug\WindowsManipulator.pdb
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\WindowsManipulator\WindowsManipulator\bin\Debug\JukeBoxSyncer.pdb
 D:\Users\soulo\Documents\GitHub\lotroJukeBox\windowsManipulator\WindowsManipulator\bin\Debug\JukeBoxSyncer.dll
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\windowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.dll
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\windowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.pdb
+D:\Users\soulo\Documents\GitHub\lotroJukeBox\windowsManipulator\WindowsManipulator\bin\Debug\WindowsInput.xml

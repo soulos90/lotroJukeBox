@@ -55,7 +55,7 @@ namespace WindowsManipulator
         }
         public void CreateButtons()
         {
-
+            
             for (int i = 0; i < Button1.Buttons.Length; ++i)
             {
                 Button1 temp = new Button1(man);
@@ -127,12 +127,17 @@ namespace WindowsManipulator
         }
         public void UpdateText()
         {
-            text.Text = "";
-            foreach (Client item in clients)
+            if (clients != null)
             {
-                text.Text += item.label + "\r\n";
+                text.Text = "";
+
+                foreach (Client item in clients)
+                {
+                    text.Text += item.label + "\r\n";
+                }
+                text.Text += report;
             }
-            text.Text += report;
+                
         }
         public void UpdateText(string r)
         {
@@ -182,6 +187,7 @@ namespace WindowsManipulator
             {
                 Report(e.Message);
             }
+            
         }
         public bool abort = false;
         public void NetThread()
@@ -190,7 +196,8 @@ namespace WindowsManipulator
             {
                 if (!pause)
                 {
-                    //man.SyncR();
+                    man.SyncR();
+                    man.SyncR();
                     Report("net Thread Called");
                     Thread.Sleep(60000);
                 }
