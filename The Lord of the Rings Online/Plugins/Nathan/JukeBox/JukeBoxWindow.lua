@@ -1,4 +1,4 @@
-JukeBoxWindow = class( Turbine.UI.Window );
+JukeboxWindow = class( Turbine.UI.Window );
 selectedSong = ""; -- set the default slot
 selectedSongIndex = 1;
 selectedTrack = 1;
@@ -8,33 +8,25 @@ dirPath = {}; -- table holding directory path
 dirPath[1] = "/"; -- set first item as root dir
 librarySize = 0;
 searchMode = false;
-inputID = 0;
-clientID = -1;
-timeCode = 0;
-LookingFor = 0;
-SaveDone = false;
-LoadDone = false;
-
 -- fix to prevent Vindar patch from messing up anything since it's not needed
-JukeBoxLoad = Turbine.PluginData.Load;
-JukeBoxSave = Turbine.PluginData.Save;
+JukeboxLoad = Turbine.PluginData.Load;
+JukeboxSave = Turbine.PluginData.Save;
 
-Settings = { WindowPosition = { Left = "700", Top = "20", Width = "342", Height = "398" }, WindowVisible = "no", WindowOpacity="0.9", DirHeight = "100", TracksHeight = "50", TracksVisible = "no", ToggleVisible = "yes", ToggleLeft = tostring(Turbine.UI.Display.GetWidth()-55), ToggleTop = "310", ToggleOpacity = "0.25", SearchVisible = "yes", DescriptionVisible = "no", DescriptionFirst = "no" }; -- default values
+Settings = { WindowPosition = { Left = "700", Top = "20", Width = "342", Height = "398" }, WindowVisible = "no", WindowOpacity="0.9", DirHeight = "100", TracksHeight = "50", TracksVisible = "no", ToggleVisible = "yes", ToggleLeft = "100", ToggleTop = "100", ToggleOpacity = "1", SearchVisible = "yes", DescriptionVisible = "no", DescriptionFirst = "no" }; -- default values
 CharSettings = {
 };
 
-InputDB = {
-	Id = Self:clientID,
-	Timecode = Self:timeCode,
-	IsActive = true,
-	LookingFor = Self:LookingFor,
-	Commands = {
-	}
-}
-SyncDB = {
-	Commands = {
-	}
-}
+-- if (lang == "de" or lang == "fr") then	
+	-- if (Turbine.Engine.GetLocale() == "de" or Turbine.Engine.GetLocale() == "fr") then
+		-- Settings.WindowOpacity = "0,9";
+	-- end
+-- end
+euroFormat=(tonumber("1,000")==1);
+if euroFormat then
+	Settings.WindowOpacity = "0,9";
+	Settings.ToggleOpacity = "0,25";
+end
+
 SongDB = {
 	Directories = {
 	},
@@ -43,115 +35,26 @@ SongDB = {
 };
 SearchDB = {
 };
-Self:SetWantsUpdates(true);
-previousGameTime = Turbine.Engine.GetGameTime();
-self.UnloadSet = false;
-function JukeBoxWindow:Update()
-	if not self.UnloadSet then
-		self.UnloadSet = true;
-		Plugins["JukeBox"].Unload = function(self,sender,args)
-			UnloadMe();
-		end
-	end
-	local currentGameTime = Turbine.Engine.GetGameTime();
-	local delta = currentGameTime - previousGameTime;
-	if( delta > 10 ) then
-		Self:SetWantsUpdates(false);
-		JukeBoxWindow:Communicate();
-	end
-end
 
-function JukeBoxWindow:Communicate()
-	SaveDone = false;
-	LoadDone = false;
-	JukeBoxLoad( Turbine.DataScope.Character, "JukeBoxSync" .. Self:LookingFor, FinishedSyncLoad( result, message ));
-	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxInput" .. Self:inputID, InputDB, FinishedInputSave( result, message ));
-	Self:inputID = (Self:inputID + 1) % 1000;
-end
-
-function JukeBoxWindow:FinishedSyncLoad(result, message)
-	if ( result ) then
-		Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["loaded "] .. message .. "</rgb>");
-		if IsTidy(message) then
-			ProcessSync(message);
-			LookingFor = (LookingFor + 1) % 1000;
-			InputDB.LookingFor = LookingFor;
-			JukeBoxLoad( Turbine.DataScope.Character, "JukeBoxSync" .. Self:LookingFor, FinishedSyncLoad( result, message ));
-		else
-			FinishedCommunicate(2);
-	else
-		Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["sync not found"] .. " " .. message .. "</rgb>" );
-		FinishedCommunicate(2);
-	end
-end
-
-function JukeBoxWindow:FinishedInputSave(result, message)
-	if ( result ) then
-		Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["jb_saved"] .. "</rgb>");
-	else
-		Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["jb_notsaved"] .. " " .. message .. "</rgb>" );
-	end
-	FinishedCommunicate(1);
-end
-
-function JukeBoxWindow:FinishedCommunicate(sender)
-	if(sender == 1) then
-		SaveDone = true;
-	else
-		LoadDone = true;
-	end
-	if(SaveDone and LoadDone) then
-		Self:SetWantsUpdates(true);
-		previousGameTime = Turbine.Engine.GetGameTime();
-	end
-end
-
-function JukeBoxWindow:ProcessSync(data)
-	SyncDB = data;
-	for i = SyncDB.Commands do
-		CommandSwitch(i);
-	end
-end
-
-function JukeBoxWindow:CommandSwitch(command)
-	if(SyncDB.Commands.CommandType == "SetID") then
-		clientID = SyncDB.Commands.Details;
-	else if(SyncDB.Commands.CommandType == "SetTime")--TODO: add more commands
-		timeCode = SyncDB.Commands.Details;
-	end
-end
-
-function JukeBoxWindow:IsTidy(data)
-	--TODO: check if file is complete
-	return true;
-end
-
-function JukeBoxWindow:UnloadMe()
-	InputDB.IsActive = false;
-	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxInput" .. Self:inputID, InputDB );
-end
-
-
-function JukeBoxWindow:UpdateSongs()
-	SongDB = JukeBoxLoad( Turbine.DataScope.Account , "JukeBoxData") or SongDB;
-	if not SongDB.Songs then
-		SongDB = {
-			Directories = {
-			},
-			Songs = {	
-			}
-		};
-	end	
+function JukeboxWindow:SetDB(data)
+	SongDB = data;
 	librarySize = #SongDB.Songs;
-	Self:InitDirList();
+	JukeBoxWindow:InitDirList();
 end
 
-function JukeBoxWindow:Constructor()
+function JukeboxWindow:GetDB()
+	return SongDB;
+end
+
+function JukeboxWindow:Constructor()
 	Turbine.UI.Lotro.Window.Constructor( self );
 	
-	SongDB = JukeBoxLoad( Turbine.DataScope.Account , "JukeBoxData") or SongDB;
-	Settings = JukeBoxLoad( Turbine.DataScope.Account , "JukeBoxSettings") or Settings;
-	CharSettings = JukeBoxLoad( Turbine.DataScope.Character , "JukeBoxSettings") or CharSettings;
+	Background = Nathan.Jukebox.JukeboxBackground();
+	Background:SetVisible( false );
+
+	SongDB = JukeboxLoad( Turbine.DataScope.Account , "JukeboxData") or SongDB;
+	Settings = JukeboxLoad( Turbine.DataScope.Account , "JukeboxSettings") or Settings;
+	CharSettings = JukeboxLoad( Turbine.DataScope.Character , "JukeboxSettings") or CharSettings;
 	
 	-- Legacy fixes
 	if not Settings.DirHeight then
@@ -289,7 +192,7 @@ function JukeBoxWindow:Constructor()
 	--self:SetZOrder(10);
 	
 	self:SetOpacity( Settings.WindowOpacity );
-	self:SetText("JukeBox");
+	self:SetText("Jukebox");
 	
 	self.minWidth = 342;
 	self.minHeight = 308;
@@ -345,7 +248,7 @@ function JukeBoxWindow:Constructor()
 	self.sArrows1 = Turbine.UI.Control();
 	self.sArrows1:SetParent( self.separator1 );
 	self.sArrows1:SetZOrder(310);
-	self.sArrows1:SetBackground("Nathan/JukeBox/arrows.tga");
+	self.sArrows1:SetBackground("Nathan/Jukebox/arrows.tga");
 	self.sArrows1:SetSize(20,10);
 	self.sArrows1:SetPosition(self.separator1:GetWidth() / 2 - 10, 1);
 	self.sArrows1:SetMouseVisible( false );
@@ -372,7 +275,7 @@ function JukeBoxWindow:Constructor()
 	self.sArrows2 = Turbine.UI.Control();
 	self.sArrows2:SetParent( self.separator2 );
 	self.sArrows2:SetZOrder(310);
-	self.sArrows2:SetBackground("Nathan/JukeBox/arrows.tga");
+	self.sArrows2:SetBackground("Nathan/Jukebox/arrows.tga");
 	self.sArrows2:SetSize(20,10);
 	self.sArrows2:SetPosition(self.separator2:GetWidth() / 2 - 10, 1);
 	self.sArrows2:SetMouseVisible( false );
@@ -465,7 +368,7 @@ function JukeBoxWindow:Constructor()
 	self.trackPrev:SetParent( self );
 	self.trackPrev:SetPosition(252, 51);
 	self.trackPrev:SetSize(12, 8);
-	self.trackPrev:SetBackground("Nathan/JukeBox/arrowup.tga");
+	self.trackPrev:SetBackground("Nathan/Jukebox/arrowup.tga");
 	self.trackPrev:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
 	self.trackPrev:SetVisible( false );
 	
@@ -474,7 +377,7 @@ function JukeBoxWindow:Constructor()
 	self.trackNext:SetParent( self );
 	self.trackNext:SetPosition(252, 78);
 	self.trackNext:SetSize(12, 8);
-	self.trackNext:SetBackground("Nathan/JukeBox/arrowdown.tga");
+	self.trackNext:SetBackground("Nathan/Jukebox/arrowdown.tga");
 	self.trackNext:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
 	self.trackNext:SetVisible( false );
 	
@@ -492,53 +395,53 @@ function JukeBoxWindow:Constructor()
 		
 	-- actions for button mouse hovers
 	self.musicSlot.MouseEnter = function(sender,args)
-		self.musicIcon:SetBackground("Nathan/JukeBox/icn_m_hover.tga");
+		self.musicIcon:SetBackground("Nathan/Jukebox/icn_m_hover.tga");
 		self.tipLabel:SetText(Strings["tt_music"]);
 	end
 	self.musicSlot.MouseLeave = function(sender,args)
-		self.musicIcon:SetBackground("Nathan/JukeBox/icn_m.tga");
+		self.musicIcon:SetBackground("Nathan/Jukebox/icn_m.tga");
 		self.tipLabel:SetText("");
 	end
 	self.playSlot.MouseEnter = function(sender,args)
-		self.playIcon:SetBackground("Nathan/JukeBox/icn_p_hover.tga");
+		self.playIcon:SetBackground("Nathan/Jukebox/icn_p_hover.tga");
 		self.tipLabel:SetText(Strings["tt_play"]);
 	end
 	self.playSlot.MouseLeave = function(sender,args)
-		self.playIcon:SetBackground("Nathan/JukeBox/icn_p.tga");
+		self.playIcon:SetBackground("Nathan/Jukebox/icn_p.tga");
 		self.tipLabel:SetText("");
 	end
 	self.readySlot.MouseEnter = function(sender,args)
-		self.readyIcon:SetBackground("Nathan/JukeBox/icn_r_hover.tga");
+		self.readyIcon:SetBackground("Nathan/Jukebox/icn_r_hover.tga");
 		self.tipLabel:SetText(Strings["tt_ready"]);
 	end
 	self.readySlot.MouseLeave = function(sender,args)
-		self.readyIcon:SetBackground("Nathan/JukeBox/icn_r.tga");
+		self.readyIcon:SetBackground("Nathan/Jukebox/icn_r.tga");
 		self.tipLabel:SetText("");
 	end
 	self.syncSlot.MouseEnter = function(sender,args)
-		self.syncIcon:SetBackground("Nathan/JukeBox/icn_s_hover.tga");
+		self.syncIcon:SetBackground("Nathan/Jukebox/icn_s_hover.tga");
 		self.tipLabel:SetText(Strings["tt_sync"]);
 	end
 	self.syncSlot.MouseLeave = function(sender,args)
-		self.syncIcon:SetBackground("Nathan/JukeBox/icn_s.tga");
+		self.syncIcon:SetBackground("Nathan/Jukebox/icn_s.tga");
 		self.tipLabel:SetText("");
 	end
 	self.syncStartSlot.MouseEnter = function(sender,args)
-		self.syncStartIcon:SetBackground("Nathan/JukeBox/icn_ss_hover.tga");
+		self.syncStartIcon:SetBackground("Nathan/Jukebox/icn_ss_hover.tga");
 		self.tipLabel:SetText(Strings["tt_start"]);
 	end
 	self.syncStartSlot.MouseLeave = function(sender,args)
-		self.syncStartIcon:SetBackground("Nathan/JukeBox/icn_ss.tga");
+		self.syncStartIcon:SetBackground("Nathan/Jukebox/icn_ss.tga");
 		self.tipLabel:SetText("");
 	end
 	self.shareSlot.MouseEnter = function(sender,args)
-		self.shareIcon:SetBackground("Nathan/JukeBox/icn_sh_hover.tga");
+		self.shareIcon:SetBackground("Nathan/Jukebox/icn_sh_hover.tga");
 		if (Settings.Commands[Settings.DefaultCommand].Title) then
 			self.tipLabel:SetText(Settings.Commands[Settings.DefaultCommand].Title);
 		end
 	end
 	self.shareSlot.MouseLeave = function(sender,args)
-		self.shareIcon:SetBackground("Nathan/JukeBox/icn_sh.tga");
+		self.shareIcon:SetBackground("Nathan/Jukebox/icn_sh.tga");
 		self.tipLabel:SetText("");
 	end
 	self.shareSlot.MouseWheel = function(sender,args)
@@ -570,7 +473,7 @@ function JukeBoxWindow:Constructor()
 	self.musicIcon:SetZOrder(110);
 	self.musicIcon:SetMouseVisible(false);
 	self.musicIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.musicIcon:SetBackground("Nathan/JukeBox/icn_m.tga");
+	self.musicIcon:SetBackground("Nathan/Jukebox/icn_m.tga");
 	
 	self.playIcon = Turbine.UI.Control();
 	self.playIcon:SetParent( self );
@@ -579,7 +482,7 @@ function JukeBoxWindow:Constructor()
 	self.playIcon:SetZOrder(110);
 	self.playIcon:SetMouseVisible(false);
 	self.playIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.playIcon:SetBackground("Nathan/JukeBox/icn_p.tga");
+	self.playIcon:SetBackground("Nathan/Jukebox/icn_p.tga");
 
 	self.readyIcon = Turbine.UI.Control();
 	self.readyIcon:SetParent( self );
@@ -588,7 +491,7 @@ function JukeBoxWindow:Constructor()
 	self.readyIcon:SetZOrder(110);
 	self.readyIcon:SetMouseVisible(false);
 	self.readyIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.readyIcon:SetBackground("Nathan/JukeBox/icn_r.tga");
+	self.readyIcon:SetBackground("Nathan/Jukebox/icn_r.tga");
 	
 	self.syncIcon = Turbine.UI.Control();
 	self.syncIcon:SetParent( self );
@@ -597,7 +500,7 @@ function JukeBoxWindow:Constructor()
 	self.syncIcon:SetZOrder(110);
 	self.syncIcon:SetMouseVisible(false);
 	self.syncIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.syncIcon:SetBackground("Nathan/JukeBox/icn_s.tga");
+	self.syncIcon:SetBackground("Nathan/Jukebox/icn_s.tga");
 	
 	self.syncStartIcon = Turbine.UI.Control();
 	self.syncStartIcon:SetParent( self );
@@ -606,7 +509,7 @@ function JukeBoxWindow:Constructor()
 	self.syncStartIcon:SetZOrder(110);
 	self.syncStartIcon:SetMouseVisible(false);
 	self.syncStartIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.syncStartIcon:SetBackground("Nathan/JukeBox/icn_ss.tga");
+	self.syncStartIcon:SetBackground("Nathan/Jukebox/icn_ss.tga");
 	
 	self.shareIcon = Turbine.UI.Control();
 	self.shareIcon:SetParent( self );
@@ -615,7 +518,7 @@ function JukeBoxWindow:Constructor()
 	self.shareIcon:SetZOrder(110);
 	self.shareIcon:SetMouseVisible(false);
 	self.shareIcon:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.shareIcon:SetBackground("Nathan/JukeBox/icn_sh.tga");	
+	self.shareIcon:SetBackground("Nathan/Jukebox/icn_sh.tga");	
 	
 	-- selected song display
 	self.songTitle = Turbine.UI.Label();
@@ -812,9 +715,66 @@ function JukeBoxWindow:Constructor()
 	if (Settings.SearchVisible == "no") then 
 		self:ToggleSearch("off");
 	end
-
+	
 	-- initialize list items from song database
-	JukeBoxWindow:InitDirList();
+	if (librarySize ~= 0 and not SongDB.Songs[1].Realnames) then
+		
+		for i = 1, #SongDB.Directories do
+			local dirItem = Turbine.UI.Label();
+			local _, dirLevel = string.gsub(SongDB.Directories[i], "/", "/");
+			if (dirLevel == 2) then				
+				dirItem:SetText(string.sub(SongDB.Directories[i],2));			
+				dirItem:SetTextAlignment( Turbine.UI.ContentAlignment.MiddleLeft );
+				dirItem:SetSize( 1000, 20 );				
+				self.dirlistBox:AddItem( dirItem );
+			end
+		end
+		
+		self.listFrame.heading:SetText( Strings["ui_dirs"] .. " (" .. selectedDir .. ")" );
+		
+		if (self.dirlistBox:ContainsItem(1)) then
+			local dirItem = self.dirlistBox:GetItem(1);
+			dirItem:SetForeColor( Turbine.UI.Color(1, 0.15, 0.95, 0.15) );
+		end
+		
+		-- load content to song list box
+		self:LoadSongs();
+		
+		-- set first item as initial selection
+		local found = self.songlistBox:GetItemCount();		
+		if (found > 0) then
+			self:SelectSong(1);
+			self:RefreshTracks(selectedSongIndex);
+			self:ChangeTrack(selectedTrack);
+		end
+		self.separator1.heading:SetText( Strings["ui_songs"] .. " (" .. found .. ")" );
+		
+		-- action for selecting a dir
+		self.dirlistBox.SelectedIndexChanged = function( sender, args )
+			self:SelectDir(sender:GetSelectedIndex());
+		end
+		-- action for selecting a song
+		self.songlistBox.SelectedIndexChanged = function( sender, args )
+			self:SelectSong(sender:GetSelectedIndex());
+		end
+		-- action for selecting a track
+		self.tracklistBox.SelectedIndexChanged = function( sender, args )
+			self:ChangeTrack(sender:GetSelectedIndex());
+		end
+	else
+		-- show message when library is empty or database format has changed
+		self.separator1:SetVisible( false );
+		self.separator2:SetVisible( false );
+		self.dirScroll:SetVisible( false );
+		self.songScroll:SetVisible( false );
+		self.trackScroll:SetVisible( false );
+		self.listFrame.heading:SetText( "" );
+		self.emptyLabel = Turbine.UI.Label();
+		self.emptyLabel:SetParent( self );
+		self.emptyLabel:SetPosition( 30, 155 );
+		self.emptyLabel:SetSize(220, 240);
+		self.emptyLabel:SetText(Strings["err_nosongs"]);
+	end
 	
 	-- window resize control
 	self.resizeCtrl = Turbine.UI.Control();
@@ -1053,8 +1013,8 @@ function JukeBoxWindow:Constructor()
 		self:SetVisible( false );
 	end
 	
-	if (Plugins ["JukeBox"] ~= nil ) then
-		Plugins["JukeBox"].Unload = function( sender, args )
+	if (Plugins ["Jukebox"] ~= nil ) then
+		Plugins["Jukebox"].Unload = function( sender, args )
 				self:SaveSettings();
 		end
 	end
@@ -1122,8 +1082,9 @@ function JukeBoxWindow:InitDirList()
 		self.emptyLabel:SetText(Strings["err_nosongs"]);
 	end
 end
+
 -- action for selecting a directory
-function JukeBoxWindow:SelectDir( args )
+function JukeboxWindow:SelectDir( args )
 	searchMode = false;
 	local selectedItem = self.dirlistBox:GetItem(args);
 	
@@ -1195,7 +1156,7 @@ function JukeBoxWindow:SelectDir( args )
 end
 
 -- load content to song list box
-function JukeBoxWindow:LoadSongs()
+function JukeboxWindow:LoadSongs()
 	local gotMod = false; --got the songIndexMod
 	for i = 1, librarySize do
 		local songItem = Turbine.UI.Label();
@@ -1221,7 +1182,7 @@ function JukeBoxWindow:LoadSongs()
 end
 
 -- action for selecting a song
-function JukeBoxWindow:SelectSong( args )
+function JukeboxWindow:SelectSong( args )
 	selectedTrack = 1;
 	local selectedItem = self.songlistBox:GetItem(args);
 
@@ -1291,7 +1252,7 @@ end
 
 
 -- action for repopulating the track list when song is changed
-function JukeBoxWindow:RefreshTracks( songid )			
+function JukeboxWindow:RefreshTracks( songid )			
 	self.tracklistBox:ClearItems();
 	if not searchMode then
 		for i = 1, #SongDB.Songs[songid].Tracks do
@@ -1313,7 +1274,7 @@ function JukeBoxWindow:RefreshTracks( songid )
 end
 
 -- action for changing track selection
-function JukeBoxWindow:ChangeTrack(trackid)
+function JukeboxWindow:ChangeTrack(trackid)
 	selectedTrack = trackid;
 	local trackcount;
 	if not searchMode then
@@ -1365,7 +1326,7 @@ function JukeBoxWindow:ChangeTrack(trackid)
 end
 
 -- action for setting focus on the track list
-function JukeBoxWindow:SetTrackFocus(trackNumber)
+function JukeboxWindow:SetTrackFocus(trackNumber)
 	for i = 1,self.tracklistBox:GetItemCount() do
 		local item = self.tracklistBox:GetItem(i);
 		if (i == trackNumber) then
@@ -1377,7 +1338,7 @@ function JukeBoxWindow:SetTrackFocus(trackNumber)
 end
 
 -- action to search songs
-function JukeBoxWindow:SearchSongs()
+function JukeboxWindow:SearchSongs()
 	searchMode = true;
 	self.songlistBox:ClearItems();
 	local ii = 1;
@@ -1429,7 +1390,7 @@ function JukeBoxWindow:SearchSongs()
 end
 
 -- action for toggling search function on and off
-function JukeBoxWindow:ToggleSearch(mode)
+function JukeboxWindow:ToggleSearch(mode)
 	if (Settings.SearchVisible == "yes" or mode == "off") then		
 		Settings.SearchVisible = "no";
 		self.searchInput:SetVisible(false);
@@ -1470,7 +1431,7 @@ function JukeBoxWindow:ToggleSearch(mode)
 end
 
 -- action for toggling description on and off
-function JukeBoxWindow:ToggleDescription()
+function JukeboxWindow:ToggleDescription()
 	if (Settings.DescriptionVisible == "yes") then
 		Settings.DescriptionVisible = "no";
 		self.songlistBox:ClearItems();
@@ -1495,7 +1456,7 @@ function JukeBoxWindow:ToggleDescription()
 end
 
 -- action for toggling description on and off
-function JukeBoxWindow:ToggleDescriptionFirst()
+function JukeboxWindow:ToggleDescriptionFirst()
 	if (Settings.DescriptionFirst == "yes") then
 		Settings.DescriptionFirst = "no";		
 		if (Settings.DescriptionVisible == "yes") then
@@ -1524,7 +1485,7 @@ function JukeBoxWindow:ToggleDescriptionFirst()
 end
 
 -- action for toggling tracks display on and off
-function JukeBoxWindow:ToggleTracks()
+function JukeboxWindow:ToggleTracks()
 	if (Settings.TracksVisible == "yes") then
 		Settings.TracksVisible = "no";
 		self.songlistBox:SetHeight(self.listContainer:GetHeight() - self.dirlistBox:GetHeight() - 13);
@@ -1562,7 +1523,7 @@ function JukeBoxWindow:ToggleTracks()
 end
 
 -- action for toggling instrument slots on and off
-function JukeBoxWindow:ToggleInstrSlots()
+function JukeboxWindow:ToggleInstrSlots()
 	local hMod = 45;
 	if (CharSettings.InstrSlots["visible"] == "yes") then		
 		CharSettings.InstrSlots["visible"] = "no";		
@@ -1593,7 +1554,7 @@ function JukeBoxWindow:ToggleInstrSlots()
 	end
 end
 
-function JukeBoxWindow:ClearSlots()
+function JukeboxWindow:ClearSlots()
 	for i=1,CharSettings.InstrSlots["number"] do
 		CharSettings.InstrSlots[tostring(i)].qsType ="";
 		CharSettings.InstrSlots[tostring(i)].qsData = "";
@@ -1602,7 +1563,7 @@ function JukeBoxWindow:ClearSlots()
 	end
 end
 
-function JukeBoxWindow:AddSlot()
+function JukeboxWindow:AddSlot()
 
 	if self:GetWidth() > 10+(CharSettings.InstrSlots["number"]+1)*40 then
 		local newslot = CharSettings.InstrSlots["number"]+1;
@@ -1646,7 +1607,7 @@ function JukeBoxWindow:AddSlot()
 	end
 end
 
-function JukeBoxWindow:DelSlot()
+function JukeboxWindow:DelSlot()
 	if CharSettings.InstrSlots["number"] > 1 then
 		local delslot = CharSettings.InstrSlots["number"];
 		CharSettings.InstrSlots["number"] = CharSettings.InstrSlots["number"]-1;
@@ -1657,7 +1618,7 @@ function JukeBoxWindow:DelSlot()
 end
 
 
-function JukeBoxWindow:ExpandCmd(cmdId)
+function JukeboxWindow:ExpandCmd(cmdId)
 	if librarySize ~= 0 then
 		local cmd = Settings.Commands[cmdId].Command;
 		if SongDB.Songs[selectedSongIndex].Tracks[selectedTrack] then
@@ -1683,7 +1644,7 @@ function JukeBoxWindow:ExpandCmd(cmdId)
 	end
 end
 
-function JukeBoxWindow:SaveSettings()
+function JukeboxWindow:SaveSettings()
 	Settings.WindowPosition.Left = tostring(self:GetLeft());
 	Settings.WindowPosition.Top = tostring(self:GetTop());
 	Settings.WindowPosition.Width = tostring(self:GetWidth());
@@ -1700,7 +1661,7 @@ function JukeBoxWindow:SaveSettings()
 	end
 	CharSettings.InstrSlots["number"] = tostring(CharSettings.InstrSlots["number"]);
 	
-	JukeBoxSave( Turbine.DataScope.Account, "JukeBoxSettings", Settings,
+	JukeboxSave( Turbine.DataScope.Account, "JukeboxSettings", Settings,
 		function( result, message )
 			if ( result ) then
 				Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["sh_saved"] .. "</rgb>");
@@ -1708,7 +1669,7 @@ function JukeBoxWindow:SaveSettings()
 				Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["sh_notsaved"] .. " " .. message .. "</rgb>" );
 			end
 		end);
-	JukeBoxSave( Turbine.DataScope.Character, "JukeBoxSettings", CharSettings,
+	JukeboxSave( Turbine.DataScope.Character, "JukeboxSettings", CharSettings,
 		function( result, message )
 			if ( result ) then
 				--Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["sh_saved"] .. "</rgb>");

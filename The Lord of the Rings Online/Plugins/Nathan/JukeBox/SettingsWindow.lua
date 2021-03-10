@@ -33,7 +33,7 @@ function SettingsWindow:Constructor()
 	end	
 	
 	self.trackCheck.CheckedChanged = function(sender, args)
-		JukeBoxWindow:ToggleTracks();
+		JukeboxWindow:ToggleTracks();
 	end
 	
 	--Search function enabled checkbox
@@ -49,7 +49,7 @@ function SettingsWindow:Constructor()
 		self.searchCheck:SetChecked(false);
 	end
 	self.searchCheck.CheckedChanged = function(sender, args)
-		JukeBoxWindow:ToggleSearch();
+		JukeboxWindow:ToggleSearch();
 	end
 	
 	--Show description in song list checkbox
@@ -65,7 +65,7 @@ function SettingsWindow:Constructor()
 		self.descCheck:SetChecked(false);
 	end
 	self.descCheck.CheckedChanged = function(sender, args)
-		JukeBoxWindow:ToggleDescription();
+		JukeboxWindow:ToggleDescription();
 	end
 	
 	--Show description first in song list checkbox
@@ -81,7 +81,7 @@ function SettingsWindow:Constructor()
 		self.descFirstCheck:SetChecked(false);
 	end
 	self.descFirstCheck.CheckedChanged = function(sender, args)
-		JukeBoxWindow:ToggleDescriptionFirst();
+		JukeboxWindow:ToggleDescriptionFirst();
 	end	
 	
 	--Window visibility on load checkbox
@@ -108,7 +108,7 @@ function SettingsWindow:Constructor()
 	self.sbbtnLabel:SetFont( Turbine.UI.Lotro.Font.TrajanPro16 );
 	self.sbbtnLabel:SetText(Strings["ui_icon"]);
 	
-	--JukeBox button visibility checkbox	
+	--Jukebox button visibility checkbox	
 	self.toggleCheck = Turbine.UI.Lotro.CheckBox();
 	self.toggleCheck:SetParent( self );
 	self.toggleCheck:SetPosition(20, 205);
@@ -177,7 +177,7 @@ function SettingsWindow:Constructor()
 		self.instrCheck:SetChecked(false);
 	end
 	self.instrCheck.CheckedChanged = function(sender, args)
-		JukeBoxWindow:ToggleInstrSlots();
+		JukeboxWindow:ToggleInstrSlots();
 	end	
 
 	
@@ -189,7 +189,7 @@ function SettingsWindow:Constructor()
 	self.clrSlotsBtn:SetText(Strings["ui_clr_slots"]);
 	
 	self.clrSlotsBtn.MouseDown = function(sender,args)
-		JukeBoxWindow:ClearSlots();
+		JukeboxWindow:ClearSlots();
 	end
 	
 	-- add / remove slots
@@ -200,7 +200,7 @@ function SettingsWindow:Constructor()
 	self.addSlotBtn:SetText(Strings["ui_add_slot"]);
 	
 	self.addSlotBtn.MouseDown = function(sender,args)
-		JukeBoxWindow:AddSlot();
+		JukeboxWindow:AddSlot();
 	end
 	self.delSlotBtn = Turbine.UI.Lotro.Button();
 	self.delSlotBtn:SetParent(self);
@@ -209,7 +209,7 @@ function SettingsWindow:Constructor()
 	self.delSlotBtn:SetText(Strings["ui_del_slot"]);
 	
 	self.delSlotBtn.MouseDown = function(sender,args)
-		JukeBoxWindow:DelSlot();
+		JukeboxWindow:DelSlot();
 	end	
 	
 	-- commands label
@@ -357,7 +357,7 @@ function SettingsWindow:Constructor()
 	self.saveBtn:SetText(Strings["ui_save"]);
 	self.saveBtn.MouseDown = function(sender,args)
 		if(args.Button == Turbine.UI.MouseButton.Left) then
-			JukeBoxWindow:SaveSettings();
+			JukeboxWindow:SaveSettings();
 			self:SetVisible(false);
 		end
 	end

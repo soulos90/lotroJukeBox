@@ -1,2 +1,2 @@
-import "Nathan.JukeBox.JukeBoxWindow";
+import "Nathan.Jukebox.JukeboxWindow";
 

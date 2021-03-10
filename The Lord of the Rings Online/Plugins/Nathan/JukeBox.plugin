@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Plugin>
 	<Information>
-		<Name>JukeBox</Name>
+		<Name>Jukebox</Name>
 		<Author>Nathan</Author>
-		<Version>1.0</Version>
-		<Image>Nathan/jukebox.jpg</Image>
+		<Version>0.92</Version>
+		<Image>Nathan/Jukeboxicon.jpg</Image>
 	</Information>
-	<Package>Nathan.JukeBox.Main</Package>
+	<Package>Nathan.Jukebox.Main</Package>
 </Plugin>

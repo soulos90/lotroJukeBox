@@ -22,13 +22,13 @@ function ToggleWindow:Constructor()
 	self.button:SetPosition(0,0);
 	self.button:SetSize(35,35);
 	self.button:SetBlendMode( Turbine.UI.BlendMode.AlphaBlend );
-	self.button:SetBackground("Nathan/JukeBox/toggle.tga");
+	self.button:SetBackground("Nathan/Jukebox/toggle.tga");
 	self.button.MouseEnter = function(sender,args)
-		self.button:SetBackground("Nathan/JukeBox/toggle_hover.tga");
+		self.button:SetBackground("Nathan/Jukebox/toggle_hover.tga");
 		self:SetOpacity(0.9);
 	end
 	self.button.MouseLeave = function(sender,args)
-		self.button:SetBackground("Nathan/JukeBox/toggle.tga");
+		self.button:SetBackground("Nathan/Jukebox/toggle.tga");
 		self:SetOpacity(Settings.ToggleOpacity);
 	end		
 	self.button.MouseDown = function( sender, args )
@@ -46,7 +46,7 @@ function ToggleWindow:Constructor()
 				sender.dragging = false;
 			end
 			if not sender.dragged then
-				JukeBoxWindow:SetVisible( not JukeBoxWindow:IsVisible() );
+				JukeboxWindow:SetVisible( not JukeboxWindow:IsVisible() );
 			end
 			self:SetBackColor( Turbine.UI.Color(0,0,0,0) );
 			Settings.ToggleLeft = self:GetLeft();
