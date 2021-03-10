@@ -36,15 +36,6 @@ SongDB = {
 SearchDB = {
 };
 
-function JukeboxWindow:SetDB(data)
-	SongDB = data;
-	librarySize = #SongDB.Songs;
-	JukeBoxWindow:InitDirList();
-end
-
-function JukeboxWindow:GetDB()
-	return SongDB;
-end
 
 function JukeboxWindow:Constructor()
 	Turbine.UI.Lotro.Window.Constructor( self );
@@ -1021,66 +1012,14 @@ function JukeboxWindow:Constructor()
 	
 end
 
-function JukeBoxWindow:InitDirList()
-	-- initialize list items from song database
-	if (librarySize ~= 0 and not SongDB.Songs[1].Realnames) then
-		
-		for i = 1, #SongDB.Directories do
-			local dirItem = Turbine.UI.Label();
-			local _, dirLevel = string.gsub(SongDB.Directories[i], "/", "/");
-			if (dirLevel == 2) then				
-				dirItem:SetText(string.sub(SongDB.Directories[i],2));			
-				dirItem:SetTextAlignment( Turbine.UI.ContentAlignment.MiddleLeft );
-				dirItem:SetSize( 1000, 20 );				
-				self.dirlistBox:AddItem( dirItem );
-			end
-		end
-		
-		self.listFrame.heading:SetText( Strings["ui_dirs"] .. " (" .. selectedDir .. ")" );
-		
-		if (self.dirlistBox:ContainsItem(1)) then
-			local dirItem = self.dirlistBox:GetItem(1);
-			dirItem:SetForeColor( Turbine.UI.Color(1, 0.15, 0.95, 0.15) );
-		end
-		
-		-- load content to song list box
-		self:LoadSongs();
-		
-		-- set first item as initial selection
-		local found = self.songlistBox:GetItemCount();		
-		if (found > 0) then
-			self:SelectSong(1);
-			self:RefreshTracks(selectedSongIndex);
-			self:ChangeTrack(selectedTrack);
-		end
-		self.separator1.heading:SetText( Strings["ui_songs"] .. " (" .. found .. ")" );
-		
-		-- action for selecting a dir
-		self.dirlistBox.SelectedIndexChanged = function( sender, args )
-			self:SelectDir(sender:GetSelectedIndex());
-		end
-		-- action for selecting a song
-		self.songlistBox.SelectedIndexChanged = function( sender, args )
-			self:SelectSong(sender:GetSelectedIndex());
-		end
-		-- action for selecting a track
-		self.tracklistBox.SelectedIndexChanged = function( sender, args )
-			self:ChangeTrack(sender:GetSelectedIndex());
-		end
-	else
-		-- show message when library is empty or database format has changed
-		self.separator1:SetVisible( false );
-		self.separator2:SetVisible( false );
-		self.dirScroll:SetVisible( false );
-		self.songScroll:SetVisible( false );
-		self.trackScroll:SetVisible( false );
-		self.listFrame.heading:SetText( "" );
-		self.emptyLabel = Turbine.UI.Label();
-		self.emptyLabel:SetParent( self );
-		self.emptyLabel:SetPosition( 30, 155 );
-		self.emptyLabel:SetSize(220, 240);
-		self.emptyLabel:SetText(Strings["err_nosongs"]);
-	end
+function JukeboxWindow:SetDB(data)
+	SongDB = data;
+	librarySize = #SongDB.Songs;
+	JukeBoxWindow:InitDirList();
+end
+
+function JukeboxWindow:GetDB()
+	return SongDB;
 end
 
 -- action for selecting a directory

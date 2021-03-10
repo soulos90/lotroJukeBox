@@ -7,4 +7,5 @@
 		<Image>Nathan/Jukeboxicon.jpg</Image>
 	</Information>
 	<Package>Nathan.Jukebox.Main</Package>
+	<Configuration Apartment="Jukebox" />
 </Plugin>

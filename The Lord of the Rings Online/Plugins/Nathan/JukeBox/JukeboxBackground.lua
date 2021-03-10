@@ -27,33 +27,36 @@ SyncDB = {
 function JukeboxBackground:Constructor()
 	Turbine.UI.Lotro.Window.Constructor( self );
     previousGameTime = Turbine.Engine.GetGameTime();
-    SetWantsUpdates(true);
-    UnloadSet = false;
+    self.UnloadSet = false;
+    self:SetWantsUpdates(true);
     Turbine.Shell.WriteLine("Hi Im background constructor");
 end
 
-function UnloadMe(self,sender,args)
+function JukeboxBackground:UnloadMe()
     Turbine.Shell.WriteLine("Hi Im unload");
 	InputDB.IsActive = false;
     RemoveCallback(Turbine.Chat, "Received", ChatListener);
     local a = Turbine.DataScope.Account;
     local b = "JukeBoxInput" .. inputID;
     local c = InputDB;
-    local d = FinishedInputSave;
+    local d = FinishedInputSave(result, message);
 	PatchDataSave( a,b,c,d );
 end
 
-function Update()
-	if not UnloadSet then
-		UnloadSet = true;
+function JukeboxBackground:Update()
+	if not self.UnloadSet then
+		self.UnloadSet = true;
         Turbine.Shell.WriteLine("Hi Im init update");
         AddCallback(Turbine.Chat, "Received", ChatListener);
-		Plugins["JukeBox"].Unload = UnloadMe;
+		Plugins["Jukebox"].Unload = function(self,sender,args)
+            JukeboxBackground:UnloadMe();
+        end
 	end
 	local currentGameTime = Turbine.Engine.GetGameTime();
 	local delta = currentGameTime - previousGameTime;
 	if( delta > 10 ) then
-		Self:SetWantsUpdates(false);
+        Turbine.Shell.WriteLine("Hi Im calling communicate");
+		JukeboxBackground:SetWantsUpdates(false);
 		Communicate();
 	end
 end
@@ -62,6 +65,7 @@ ChatListener = function(sender, args)
 	if (args.ChatType==Turbine.ChatType.Say) or (args.ChatType==Turbine.ChatType.Tell) or (args.ChatType==Turbine.ChatType.Fellowship) or (args.ChatType==Turbine.ChatType.Raid) then
 		commandText = {};
 		numCommands = 1;
+        Turbine.Shell.WriteLine("chat was read");
 		CBegin, CEnd = string.find(args.Message,"!JB(.-)");
 		while(CBegin~=nill) do
 			commandText[numCommands] = string.sub(args.Message, CBegin, CEnd);
@@ -78,8 +82,8 @@ function Communicate()
     Turbine.Shell.WriteLine("Hi Im Communicate");
 	SaveDone = false;
 	LoadDone = false;
-	PatchDataLoad( Turbine.DataScope.Account, "JukeBoxSync" .. LookingFor, FinishedSyncLoad);
-	PatchDataSave( Turbine.DataScope.Account, "JukeBoxInput" .. inputID, InputDB, FinishedInputSave);
+	PatchDataLoad( Turbine.DataScope.Account, "JukeBoxSync" .. LookingFor, FinishedSyncLoad(result, message));
+	PatchDataSave( Turbine.DataScope.Account, "JukeBoxInput" .. inputID, InputDB, FinishedInputSave(result, message));
 	inputID = (inputID + 1) % 1000;
 end
 
@@ -92,7 +96,7 @@ function FinishedSyncLoad(result, message)
 			ProcessSync(message);
 			LookingFor = (LookingFor + 1) % 1000;
 			InputDB.LookingFor = LookingFor;
-			PatchDataLoad( Turbine.DataScope.Account, "JukeBoxSync" .. LookingFor, FinishedSyncLoad);
+			PatchDataLoad( Turbine.DataScope.Account, "JukeBoxSync" .. LookingFor, FinishedSyncLoad(result, message));
 		else
 			FinishedCommunicate(2);
         end
@@ -104,9 +108,9 @@ end
 
 function FinishedInputSave(result, message)
 	if ( result ) then
-		Turbine.Shell.WriteLine( "<rgb=#00FF00>" .. Strings["jb_saved"] .. "</rgb>");
+		Turbine.Shell.WriteLine( "<rgb=#00FF00> input saved </rgb>");
 	else
-		Turbine.Shell.WriteLine( "<rgb=#FF0000>" .. Strings["jb_notsaved"] .. " " .. message .. "</rgb>" );
+		Turbine.Shell.WriteLine( "<rgb=#FF0000> input not saved</rgb>" );
 	end
 	FinishedCommunicate(1);
 end
@@ -158,11 +162,7 @@ function LoadSongs()
 end
 
 function CommandSwitch(command)
-	if(SyncDB.Commands.CommandType == "SetID") then
-		clientID = SyncDB.Commands.Details;
-	else if(SyncDB.Commands.CommandType == "SetTime") then
-		timeCode = SyncDB.Commands.Details;
-    end
+	
 end
 
 function IsTidy(data)
