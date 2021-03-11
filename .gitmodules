@@ -1,0 +1,3 @@
+[submodule "The Lord of the Rings Online/Plugins/lotroJukeboxPlugin"]
+	path = The Lord of the Rings Online/Plugins/lotroJukeboxPlugin
+	url = https://github.com/soulos90/lotroJukeboxPlugin.git
